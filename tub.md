@@ -24,6 +24,12 @@
 
 * mold
 
+### Views
+
+* cups
+* cup_acts
+* cup_history
+
 ### Types
 
 ```graphql
