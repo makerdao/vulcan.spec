@@ -1,4 +1,30 @@
-# Core System
+# Tub
+
+* Source: [makerdao/sai/src/tub.sol](https://github.com/makerdao/sai/blob/master/src/tub.sol)
+* Mainnet: [Dec-18-2017](https://etherscan.io/address/0x448a5065aebb8e423f0896e6c5d525c040f59af3)
+* Kovan: [Dec-18-2017](https://kovan.etherscan.io/address/0xa6bfc88aa5a5981a958f9bcb885fcb3db0bf941e)
+
+### Watched Events
+
+`LogNewCup(lad, cup)`
+
+* open
+
+`LogNote(sig, guy, foo, cupi, arg)`
+
+* give
+* lock
+* free
+* draw
+* wipe
+* shut
+* bite
+
+`LogNote(sig, guy, foo, var, arg)`
+
+* mold
+
+### Types
 
 ```graphql
 type Cup {
@@ -15,7 +41,7 @@ type Cup {
   bag: BigFloat        # Collateral USD
   time: Datetime!      # Timestamp of most recent action
   actions: [CupAct!]   # Cup actions
-  history: [CupTick!]  # Cup history
+  history(tick: TickInterval): [CupTick!]  # Cup history
 }
 
 type CupAct {
@@ -72,6 +98,13 @@ enum Acts {
   WIPE
   SHUT
   BITE
+}
+
+enum TickInterval {
+  HOUR
+  DAY
+  WEEK
+  MONTH
 }
 
 type Query {
