@@ -4,33 +4,108 @@
 * Mainnet: [Dec-18-2017](https://etherscan.io/address/0x448a5065aebb8e423f0896e6c5d525c040f59af3)
 * Kovan: [Dec-18-2017](https://kovan.etherscan.io/address/0xa6bfc88aa5a5981a958f9bcb885fcb3db0bf941e)
 
-### Watched Events
+### Transformer
 
-`LogNewCup(lad, cup)`
+```
+contract tub = {
+  version: 1.0,
+  address: {
+    kovan:   0xa6bfc88aa5a5981a958f9bcb885fcb3db0bf941e
+    mainnet: 0x448a5065aebb8e423f0896e6c5d525c040f59af3
+  },
+  description: "Dai 1.0 tub"
+}
 
-* open
+type CupAction {
+  id:  "int"
+  lad: "address"
+  ink: "wad"
+  art: "wad"
+  ire: "wad"
+}
 
-`LogNote(sig, guy, foo, cupi, arg)`
+type Gov {
+  cap: "decimal"
+  mat: "decimal"
+  tax: "decimal"
+  fee: "decimal"
+  axe: "decimal"
+  gap: "decimal"
+  var: "string"
+  arg: "decimal"
+}
 
-* give
-* lock
-* free
-* draw
-* wipe
-* shut
-* bite
+type Price {
+  pep: "decimal"
+  pip: "decimal"
+  per: "decimal"
+}
 
-`LogNote(sig, guy, foo, var, arg)`
+On event NewBlock => log
+  insert Price {
+    pip:   tub.pip
+    pep:   tub.pep
+    per:   tub.per
+    block: log.blockNumber
+    tx:    log.transactionHash
+  }
 
-* mold
+On event LogNewCup => log
+  insert CupAction {
+    id:    log.cup
+    lad:   log.lad
+    art:   0
+    ink:   0
+    act:   'open'
+    arg:   null
+    block: log.blockNumber
+    tx:    log.transactionHash
+  }
 
-### Views
+On event LogNote([
+  sig: "give(bytes32,address)",
+  sig: "lock(bytes32,uint256)",
+  sig: "free(bytes32,uint256)",
+  sig: "draw(bytes32,uint256)",
+  sig: "wipe(bytes32,uint256)",
+  sig: "bite(bytes32)",
+  sig: "shut(bytes32)"
+]) {
+  state cup = tub.cups[log.foo]
+  insert CupAction {
+    id: log.foo
+    lad: cup.lad
+    art: cup.art
+    ink: cup.ink
+    ire: cup.ire
+    block: log.blockNumber
+}
 
-* cups
-* cup_acts
-* cup_history
+On event LogNote(sig: "mold(bytes32,uint256)") => log
+  insert Gov {
+    cap:   tub.cap
+    mat:   tub.mat
+    tax:   tub.tax
+    fee:   tub.fee
+    axe:   tub.axe
+    gap:   tub.gap
+    block: log.blockNumber
+    tx:    log.transactionHash
+    arg:   log.returnValues.bar
+    var:   log.returnValues.foo
+  }
 
-### Types
+def function cupHistory(cup: id) {
+  SQL
+}
+
+def view cups {
+  SQL
+}
+```
+
+
+### GraphQL
 
 ```graphql
 type Cup {

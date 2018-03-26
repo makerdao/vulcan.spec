@@ -3,6 +3,66 @@
 * Source: [makerdao/maker-otc](https://github.com/makerdao/maker-otc)
 * Mainnet: [Dec-18-2017](https://etherscan.io/address/0x14fbca95be7e99c15cc2996c6c9d841e54b79425)
 
+### Transformer
+
+```
+contract oasis = {
+  version: 1.0,
+  address: {
+    mainnet: 0x14fbca95be7e99c15cc2996c6c9d841e54b79425
+  },
+  description: "Oasis"
+}
+
+type Offer {
+  id: Int!
+  pair: Pair
+  amt: BigInt
+  gem: Address
+  quoteAmount: BigFloat
+  quoteGem: Address
+  lad: Address
+  time: Datetime
+  cancelled: Boolan
+}
+
+type Trade {
+  id: Int!
+  pair: Pair
+  maker: Address
+  makerAmt: BigInt
+  makerGem: Address
+  taker: Address
+  takerAmount: BigFloat
+  takerGem: Address
+  time: Datetime
+}
+
+On event LogMake => log
+  insert Offer {
+    id: log.id
+    pair: log.pair
+    ...
+  }
+
+On event LogTake => log
+  insert Trade {
+    id: log.id
+    pair: log.pair
+    ...
+  }
+
+On event LogKill => log
+  update Trade(id: log.id) {
+    deleted: true
+  }
+
+def dict pairs {
+  #hash: 'MKR/ETH'
+}
+
+```
+
 ### Watched Events
 
 ```solidity
@@ -46,11 +106,6 @@ event LogKill(
 
 Delete an offer
 ```
-
-### Views
-
-* offers
-* trades
 
 ### Types
 
