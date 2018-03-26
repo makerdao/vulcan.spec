@@ -13,12 +13,8 @@ type Gov {
   mat: "decimal"
 }
 
-collection cups [Cup]
-
-collection gov [Gov]
-
 On event LogNewCup => log
-  cups append {
+  insert Cup {
     id: log.cup
     lad: log.lad
     art: 0
@@ -27,15 +23,23 @@ On event LogNewCup => log
   }
 
 On event [LogNote(sig), LogNote(sig)]
-  event { block, time, foo, bar }
-  lookup cup = cups[event.foo]
-  state { cup.lad, cup.ink, cup.art, cup.ire }
-  append cups event.time :: event.block :: event.bar as arg :: state
+  state cup = cups[event.foo]
+  insert Cup {
+    id: log.foo
+    lad: cup.lad
+    art: cup.art
+    ink: cup.ink
+    ire: cup.ire
+    block: log.blockNumber
+  }
 
 On event LogNote('mold')
-  event { block, time, foo, bar }
-  state { tub.mat, tub.tax, tub.gat, tub.fee }
-  insert gov event << state
+  insert Gov {
+    mat: tub.mat
+    tax: tub.tax
+    fee: tub.fee
+    block: log.blockNumber
+  }
 
 def view SQL
 ```
@@ -67,26 +71,22 @@ type Trade {
   time: Datetime
 }
 
-collection offers [Offer]
-collection trades [Trade]
-
-
 On event LogMake => log
-  insert offers {
+  insert Offer {
     id: log.id
     pair: log.pair
     ...
   }
 
 On event LogTake => log
-  insert trades {
+  insert Trade {
     id: log.id
     pair: log.pair
     ...
   }
 
 On event LogKill => log
-  update trades(id: log.id) {
+  update Trade(id: log.id) {
     deleted: true
   }
 
