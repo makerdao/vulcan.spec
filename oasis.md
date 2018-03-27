@@ -1,13 +1,9 @@
 # Oasis
 
-* Source: [makerdao/maker-otc](https://github.com/makerdao/maker-otc)
-* Mainnet: [Dec-18-2017](https://etherscan.io/address/0x14fbca95be7e99c15cc2996c6c9d841e54b79425)
-
-### Transformer
-
 ```
-contract oasis = {
+contract Oasis = {
   version: 1.0,
+  lib: makerdao/maker-otc
   address: {
     mainnet: 0x14fbca95be7e99c15cc2996c6c9d841e54b79425
   },
@@ -15,126 +11,70 @@ contract oasis = {
 }
 
 type Offer {
-  id: Int!
+  id: Int
   pair: Pair
-  amt: BigInt
+  amt: Int
   gem: Address
-  quoteAmount: BigFloat
+  quoteAmount: Float
   quoteGem: Address
   lad: Address
-  time: Datetime
   cancelled: Boolan
+  block: Int
+  time: Datetime
+  tx: String
 }
 
 type Trade {
-  id: Int!
+  id: Int
   pair: Pair
   maker: Address
-  makerAmt: BigInt
+  makerAmt: Float
   makerGem: Address
   taker: Address
-  takerAmount: BigFloat
+  takerAmount: Float
   takerGem: Address
+  block: Int
   time: Datetime
+  tx: String
 }
 
 On event LogMake => log
   insert Offer {
     id: log.id
     pair: log.pair
-    ...
+    amt: log.pay_amt
+    gem: log.pay_gem
+    quoteAmount: log.buy_amt
+    quoteGem: log.buy_gem
+    lad: log.maker
+    cancelled: false
+    block: log.blockNumber
+    time: log.timestamp
+    tx: log.transactionHash
   }
 
 On event LogTake => log
   insert Trade {
     id: log.id
     pair: log.pair
-    ...
+    maker: log.maker
+    makerAmt: log.give_amt
+    makerGem: log.pay_gem
+    taker: log.taker
+    takerAmount: log.take_amt
+    takerGem: log.buy_gem
+    block: Int
+    time: Datetime
+    tx: String
   }
 
 On event LogKill => log
   update Trade(id: log.id) {
-    deleted: true
+    cancelled: true
   }
 
-def dict pairs {
-  #hash: 'MKR/ETH'
+dict pairs {
+  0x1: 'MKR/ETH'
 }
 
-```
-
-### Watched Events
-
-```solidity
-event LogMake(
-    bytes32  indexed  id,
-    bytes32  indexed  pair,
-    address  indexed  maker,
-    ERC20             pay_gem,
-    ERC20             buy_gem,
-    uint128           pay_amt,
-    uint128           buy_amt,
-    uint64            timestamp
-);
-
-Create an Offer
-
-event LogTake(
-    bytes32           id,
-    bytes32  indexed  pair,
-    address  indexed  maker,
-    ERC20             pay_gem,
-    ERC20             buy_gem,
-    address  indexed  taker,
-    uint128           take_amt,
-    uint128           give_amt,
-    uint64            timestamp
-);
-
-Create a Trade
-
-event LogKill(
-    bytes32  indexed  id,
-    bytes32  indexed  pair,
-    address  indexed  maker,
-    ERC20             pay_gem,
-    ERC20             buy_gem,
-    uint128           pay_amt,
-    uint128           buy_amt,
-    uint64            timestamp
-);
-
-Delete an offer
-```
-
-### Types
-
-```graphql
-type Offer {
-  id: Int!
-  pair: Pair
-  amt: BigInt
-  gem: Address
-  quoteAmount: BigFloat
-  quoteGem: Address
-  lad: Address
-  time: Datetime
-  cancelled: Boolan
-}
-
-type Trade {
-  id: Int!
-  pair: Pair
-  maker: Address
-  makerAmt: BigInt
-  makerGem: Address
-  taker: Address
-  takerAmount: BigFloat
-  takerGem: Address
-  time: Datetime
-}
-
-enum Pair {
-  MKR/WETH
-}
 ```

@@ -1,19 +1,14 @@
 # Tub
 
-* Source: [makerdao/sai/src/tub.sol](https://github.com/makerdao/sai/blob/master/src/tub.sol)
-* Mainnet: [Dec-18-2017](https://etherscan.io/address/0x448a5065aebb8e423f0896e6c5d525c040f59af3)
-* Kovan: [Dec-18-2017](https://kovan.etherscan.io/address/0xa6bfc88aa5a5981a958f9bcb885fcb3db0bf941e)
-
-### Transformer
-
 ```
-contract tub = {
-  version: 1.0,
+contract Tub = {
+  version: 1.0
+  lib: makerdao/sai
   address: {
     kovan:   0xa6bfc88aa5a5981a958f9bcb885fcb3db0bf941e
     mainnet: 0x448a5065aebb8e423f0896e6c5d525c040f59af3
-  },
-  description: "Dai 1.0 tub"
+  }
+  description: "Dai 1.0 Tub"
 }
 
 type CupAction {
@@ -43,9 +38,9 @@ type Price {
 
 On event NewBlock => log
   insert Price {
-    pip:   tub.pip
-    pep:   tub.pep
-    per:   tub.per
+    pip:   Tub.pip
+    pep:   Tub.pep
+    per:   Tub.per
     block: log.blockNumber
     tx:    log.transactionHash
   }
@@ -71,7 +66,7 @@ On event LogNote([
   sig: "bite(bytes32)",
   sig: "shut(bytes32)"
 ]) {
-  state cup = tub.cups[log.foo]
+  state cup = Tub.cups[log.foo]
   insert CupAction {
     id: log.foo
     lad: cup.lad
@@ -83,12 +78,12 @@ On event LogNote([
 
 On event LogNote(sig: "mold(bytes32,uint256)") => log
   insert Gov {
-    cap:   tub.cap
-    mat:   tub.mat
-    tax:   tub.tax
-    fee:   tub.fee
-    axe:   tub.axe
-    gap:   tub.gap
+    cap:   Tub.cap
+    mat:   Tub.mat
+    tax:   Tub.tax
+    fee:   Tub.fee
+    axe:   Tub.axe
+    gap:   Tub.gap
     block: log.blockNumber
     tx:    log.transactionHash
     arg:   log.returnValues.bar

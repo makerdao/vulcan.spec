@@ -1,12 +1,10 @@
 # Chief
 
 ```
-contract chief = {
-  version: 1.0,
-  src: https://github.com/dapphub/ds-chief/src/chief.sol
-  deployments: {
-    mainnet: 0x01
-  },
+contract Chief = {
+  version: 1.0
+  lib: dapphub/ds-chief
+  address: { mainnet: 0x01 }
   description: "DSChief approval voting"
 }
 
@@ -24,7 +22,6 @@ type Deposit {
   guy: Address
   act: String
   arg: Float
-  sum: Float
 }
 
 type Slate {
@@ -57,7 +54,7 @@ On event LogNote(sig: 'free(uint)') => log
   }
 
 On event Etch => log
-  state yays = chief.call yays[log.slate]
+  state yays = Chief.call yays[log.slate]
   insert Slate {
     id:   log.slate
     yays: yays
