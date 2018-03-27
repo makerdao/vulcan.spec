@@ -19,7 +19,7 @@ contract Med = {
 }
 
 type Poke {
-  guy: Address
+  guy: Address indexed
   val: Decimal
   pip: Decimal
   block: Int
@@ -28,7 +28,7 @@ type Poke {
 }
 
 event LogNote(sig: 'poke(bytes32)') {
-  insert Poke {
+  Poke.create {
     guy:   event.guy
     val:   event.foo
     pip:   Med.call read()
@@ -36,6 +36,10 @@ event LogNote(sig: 'poke(bytes32)') {
     time:  event.timestamp
     tx:    event.transactionHash
   }
+}
+
+type Query {
+  allPokes(...): [Poke]
 }
 ```
 
@@ -52,7 +56,7 @@ contract Med = {
 }
 
 type Poke {
-  guy: Address
+  guy: Address indexed
   val: Decimal
   pep: Decimal
   block: Int
@@ -60,8 +64,8 @@ type Poke {
   tx: String
 }
 
-event LogNote(sig: 'poke(bytes32)')
-  insert Poke {
+event LogNote(sig: 'poke(bytes32)') {
+  Poke.create {
     guy:   _.guy
     val:   _.foo
     pep:   Med.call read()
@@ -69,16 +73,10 @@ event LogNote(sig: 'poke(bytes32)')
     time:  _.timestamp
     tx:    _.transactionHash
   }
-```
-
-### Example Query
-
-```
-allPokes(condition: { guy: $address }, first: 10) {
-  nodes {
-    guy
-    val
-    pep
-  }
 }
+
+type Query {
+  allPokes(...): [Poke]
+}
+
 ```

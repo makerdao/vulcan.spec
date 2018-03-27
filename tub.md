@@ -12,52 +12,77 @@ contract Tub = {
 }
 
 type CupAction {
-  id:  "int"
-  lad: "address"
-  ink: "wad"
-  art: "wad"
-  ire: "wad"
+  id:  Int index
+  lad: Address index
+  ink: Float
+  art: Float
+  ire: Float
+  act: Act
+  arg: String
+  block: Int
+  time: Datetime
+  tx: String
 }
 
 type Gov {
-  cap: "decimal"
-  mat: "decimal"
-  tax: "decimal"
-  fee: "decimal"
-  axe: "decimal"
-  gap: "decimal"
-  var: "string"
-  arg: "decimal"
+  cap: Float
+  mat: Float
+  tax: Float
+  fee: Float
+  axe: Float
+  gap: Float
+  var: Float
+  arg: Float
+  block: Int
+  time: Datetime
+  tx: String
 }
 
 type Price {
-  pep: "decimal"
-  pip: "decimal"
-  per: "decimal"
+  pep: Float
+  pip: Float
+  per: Float
+  block: Int
+  time: Datetime
+  tx: String
 }
 
-On event NewBlock => log
+enum Act {
+  open
+  join
+  exit
+  lock
+  free
+  draw
+  wipe
+  shut
+  bite
+}
+
+event NewBlock {
   insert Price {
     pip:   Tub.pip
     pep:   Tub.pep
     per:   Tub.per
-    block: log.blockNumber
-    tx:    log.transactionHash
+    block: event.blockNumber
+    tx:    event.transactionHash
   }
+}
 
-On event LogNewCup => log
+event LogNewCup {
   insert CupAction {
-    id:    log.cup
-    lad:   log.lad
+    id:    event.cup
+    lad:   event.lad
     art:   0
     ink:   0
     act:   'open'
     arg:   null
-    block: log.blockNumber
-    tx:    log.transactionHash
+    block: event.blockNumber
+    tx:    event.transactionHash
   }
+}
 
-On event LogNote([
+event LogNote([
   sig: "give(bytes32,address)",
   sig: "lock(bytes32,uint256)",
   sig: "free(bytes32,uint256)",
@@ -66,17 +91,17 @@ On event LogNote([
   sig: "bite(bytes32)",
   sig: "shut(bytes32)"
 ]) {
-  state cup = Tub.cups[log.foo]
+  state cup = Tub.cups[event.foo]
   insert CupAction {
-    id: log.foo
+    id: event.foo
     lad: cup.lad
     art: cup.art
     ink: cup.ink
     ire: cup.ire
-    block: log.blockNumber
+    block: event.blockNumber
 }
 
-On event LogNote(sig: "mold(bytes32,uint256)") => log
+event LogNote(sig: "mold(bytes32,uint256)") {
   insert Gov {
     cap:   Tub.cap
     mat:   Tub.mat
@@ -84,11 +109,12 @@ On event LogNote(sig: "mold(bytes32,uint256)") => log
     fee:   Tub.fee
     axe:   Tub.axe
     gap:   Tub.gap
-    block: log.blockNumber
-    tx:    log.transactionHash
-    arg:   log.returnValues.bar
-    var:   log.returnValues.foo
+    block: event.blockNumber
+    tx:    event.transactionHash
+    arg:   event.returnValues.bar
+    var:   event.returnValues.foo
   }
+}
 
 def function cupHistory(cup: id) {
   SQL
@@ -96,6 +122,23 @@ def function cupHistory(cup: id) {
 
 def view cups {
   SQL
+}
+
+view Cup {
+  act: Act!            # Most recent cup action
+  art: BigFloat!       # Outstanding debt DAI
+  block: Int!          # Block at most recent action
+  deleted: Boolean!    # True if the cup has been shut
+  id: Int!             # Unique Cup Id
+  ink: BigFloat!       # Collateral PETH
+  ire: BigFloat!       # Collateral less fee
+  lad: String!         # Cup owner
+  pip: BigFloat!       # Current USD/ETH price
+  ratio: BigFloat      # Current collateralisation ratio
+  bag: BigFloat        # Collateral USD
+  time: Datetime!      # Timestamp of most recent action
+  actions: [CupAct!]   # Cup actions
+  history(tick: TickInterval): [CupTick!]  # Cup history
 }
 ```
 

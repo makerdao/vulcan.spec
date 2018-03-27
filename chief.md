@@ -1,9 +1,10 @@
 # Chief
 
 ```
-contract Chief = {
+contract Chief {
   version: 1.0
   lib: dapphub/ds-chief
+  pg: DATABASE_URL
   address: { mainnet: 0x01 }
   description: "DSChief approval voting"
 }
@@ -11,75 +12,92 @@ contract Chief = {
 type Vote {
   guy: Address
   slate: String
+  block: Int
+  time: Datetime
+  tx: String
 }
 
 type Approval {
   guy: Address
   amt: Float
+  block: Int
+  time: Datetime
+  tx: String
 }
 
 type Deposit {
   guy: Address
   act: String
   arg: Float
+  block: Int
+  time: Datetime
+  tx: String
 }
 
 type Slate {
   id: String
   yays: [Address]
+  block: Int
+  time: Datetime
+  tx: String
 }
 
 type Hat {
   guy: Address
+  block: Int
+  time: Datetime
+  tx: String
 }
 
-On event LogNote(sig: 'lock(uint)') => log
-  insert Deposit {
-    guy:   log.guy
+event LogNote(sig: 'lock(uint)') {
+  Deposit.create {
+    guy:   event.guy
     act:   'lock'
-    arg:   log.returnValues.foo
-    block: log.blockNumber
-    time:  log.timestamp
-    tx:    log.transactionHash
+    arg:   event.returnValues.foo
+    block: event.blockNumber
+    time:  event.timestamp
+    tx:    event.transactionHash
   }
+}
 
-On event LogNote(sig: 'free(uint)') => log
-  insert Deposit {
-    guy:   log.guy
+event LogNote(sig: 'free(uint)') {
+  Deposit.create {
+    guy:   event.guy
     act:   'free'
-    arg:   log.returnValues.foo
-    block: log.blockNumber
-    time:  log.timestamp
-    tx:    log.transactionHash
+    arg:   event.returnValues.foo
+    block: event.blockNumber
+    time:  event.timestamp
+    tx:    event.transactionHash
   }
+}
 
-On event Etch => log
-  state yays = Chief.call yays[log.slate]
-  insert Slate {
-    id:   log.slate
-    yays: yays
+event Etch {
+  Slate.create {
+    id:   event.slate
+    yays: Chief.call yays[log.slate]
   }
+}
 
-On event LogNote(sig: 'lift(address)') => log
-  insert Hat {
-    guy:   log.foo
-    block: log.blockNumber
-    time:  log.timestamp
+event LogNote(sig: 'lift(address)') {
+  Hat.create {
+    guy:   event.foo
+    block: event.blockNumber
+    time:  event.timestamp
   }
+}
 
 
-// Vote - assign weight to a Slate
-On event LogNote(sig: 'vote(bytes32)') => log
-  insert Vote {
-    guy:   log.guy
-    slate: log.foo
-    block: log.blockNumber
-    time:  log.timestamp
+event LogNote(sig: 'vote(bytes32)') {
+  Vote.create {
+    guy:   event.guy
+    slate: event.foo
+    block: event.blockNumber
+    time:  event.timestamp
   }
   // TODO - update approvals via trigger
-  Slate(id: log.foo).each(yay) =>
+  Slate(id: event.foo).each(yay) =>
     Approval(guy: yay) {
-      weight: Deposit(guy: log.guy).sum
+      weight: Deposit(guy: event.guy).sum
     }
-
+}
 ```

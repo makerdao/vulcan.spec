@@ -12,13 +12,13 @@ contract Oasis = {
 
 type Offer {
   id: Int
-  pair: Pair
+  pair: Pair index
   amt: Int
   gem: Address
   quoteAmount: Float
   quoteGem: Address
-  lad: Address
-  cancelled: Boolan
+  lad: Address index
+  cancelled: Boolan index
   block: Int
   time: Datetime
   tx: String
@@ -26,11 +26,11 @@ type Offer {
 
 type Trade {
   id: Int
-  pair: Pair
-  maker: Address
+  pair: Pair index
+  maker: Address index
   makerAmt: Float
   makerGem: Address
-  taker: Address
+  taker: Address index
   takerAmount: Float
   takerGem: Address
   block: Int
@@ -38,43 +38,53 @@ type Trade {
   tx: String
 }
 
-On event LogMake => log
-  insert Offer {
-    id: log.id
-    pair: log.pair
-    amt: log.pay_amt
-    gem: log.pay_gem
-    quoteAmount: log.buy_amt
-    quoteGem: log.buy_gem
-    lad: log.maker
+event LogMake {
+  Offer.create {
+    id: event.id
+    pair: event.pair
+    amt: event.pay_amt
+    gem: event.pay_gem
+    quoteAmount: event.buy_amt
+    quoteGem: event.buy_gem
+    lad: event.maker
     cancelled: false
-    block: log.blockNumber
-    time: log.timestamp
-    tx: log.transactionHash
+    block: event.blockNumber
+    time: event.timestamp
+    tx: event.transactionHash
   }
+}
 
-On event LogTake => log
-  insert Trade {
-    id: log.id
-    pair: log.pair
-    maker: log.maker
-    makerAmt: log.give_amt
-    makerGem: log.pay_gem
-    taker: log.taker
-    takerAmount: log.take_amt
-    takerGem: log.buy_gem
+event LogTake {
+  Trade.create {
+    id: event.id
+    pair: Dict.pairs(event.pair)
+    maker: event.maker
+    makerAmt: event.give_amt
+    makerGem: event.pay_gem
+    taker: event.taker
+    takerAmount: event.take_amt
+    takerGem: event.buy_gem
     block: Int
     time: Datetime
     tx: String
   }
-
-On event LogKill => log
-  update Trade(id: log.id) {
-    cancelled: true
-  }
-
-dict pairs {
-  0x1: 'MKR/ETH'
 }
 
+event LogKill {
+  Trade(id: event.id).set {
+    cancelled: true
+  }
+}
+
+type Dict {
+  pairs: {
+    0x1: 'MKR/WETH',
+    0x2: 'MKR/DAI'
+  }
+}
+
+type Query {
+  allOrders(...): [Order]
+  allTrades(...): [Trade]
+}
 ```
