@@ -1,205 +1,88 @@
 # Chief
 
 ```
-slates[sha]    => [candidate, candidate]
-votes[guy]     => sha
-approvals[guy] => $amount
-deposits[guy]  => $amount
-
-lock(wad)
-free(wad)
-
-etch(addresses)   create a slate
-vote(slate)       move a voters weight to the specified slate
-
-lift              hat goes to the most approvals
-
-SELECT * FROM slates LIMIT 1;
----------------------------------
-id            | 31fb53c
-addresses     | [ 0x1, 0x2, 0x3 ]
-
-SELECT * FROM votes LIMIT 1;
----------------------------------
-address       | 0x4
-slate_id      | 31fb53c
-
-SELECT * FROM approvals LIMIT 1;
----------------------------------
-address       | 0x4
-value         | 100,000
-
-SELECT * FROM deposits LIMIT 1;
----------------------------------
-address       | 0x4
-value         | 100,000
-```
-
-### Votes
-
-```
-votes[guy] => sha
-```
-
-### List - all voters
-
-Group by sha sort by votes
-
-```
-GET /votes [
-  #guy: {
-    #sha: [
-      #candidate: {
-        votes: $amount
-      },
-      #candidate: {
-        votes: $amount
-      },
-    ]
+contract chief = {
+  version: 1.0,
+  src: https://github.com/dapphub/ds-chief/src/chief.sol
+  deployments: {
+    mainnet: 0x01
   },
-  #guy: {
-    #sha: [
-      #candidate: {
-        votes: $amount
-      },
-      #candidate: {
-        votes: $amount
-      },
-    ]
-  }
-]
-```
-
-### Slates
-
-```
-slates[sha] => [candidate, candidate]
-```
-
-### List - all slates
-
-Sort by total amounts
-
-```
-GET /slates [
-  #sha: [
-    #candidate: {
-      total: $amount
-    },
-    #candidate: {
-      total: $amount
-    },
-  ],
-  #sha: [
-    #candidate: {
-      total: $amount
-    },
-    #candidate: {
-      total: $amount
-    },
-  ]
-]
-```
-
-### Deposits
-
-```
-deposits[guy] => $amount
-```
-
-### List - all deposits
-
-Sort by total amount
-
-```
-GET /deposits [
-  #guy: {
-    total: $amount
-  },
-  #guy: {
-    total: $amount
-  }
-]
-```
-
-### Show
-
-```
-GET /deposits/#guy {
-  total: $amount
+  description: "DSChief approval voting"
 }
-```
 
-### Deposit Logs
-
-Sort by timestamp
-
-```
-GET /deposits/#guy/history {
-  $timestamp: {
-    total: $amount
-  },
-  $timestamp: {
-    total: $amount
-  }
+type Vote {
+  guy: Address
+  slate: String
 }
-```
 
-### Approvals - top candidates
+type Approval {
+  guy: Address
+  amt: Float
+}
 
-```
-approvals[candidate] => $amount
-```
+type Deposit {
+  guy: Address
+  act: String
+  arg: Float
+  sum: Float
+}
 
-### List
+type Slate {
+  id: String
+  yays: [Address]
+}
 
-Sort by total amount for top candidates
+type Hat {
+  guy: Address
+}
 
-```
-GET /approvals [
-  #candidate: {
-    total: $amount
-  },
-  #candidate: {
-    total: $amount
+On event LogNote(sig: 'lock(uint)') => log
+  insert Deposit {
+    guy:   log.guy
+    act:   'lock'
+    arg:   log.returnValues.foo
+    block: log.blockNumber
+    time:  log.timestamp
+    tx:    log.transactionHash
   }
-]
-```
 
-### ACTIONS
+On event LogNote(sig: 'free(uint)') => log
+  insert Deposit {
+    guy:   log.guy
+    act:   'free'
+    arg:   log.returnValues.foo
+    block: log.blockNumber
+    time:  log.timestamp
+    tx:    log.transactionHash
+  }
 
-### Lock & Free
+On event Etch => log
+  state yays = chief.call yays[log.slate]
+  insert Slate {
+    id:   log.slate
+    yays: yays
+  }
 
-Add and remove voting stake (MKR) in exchange for IOU
+On event LogNote(sig: 'lift(address)') => log
+  insert Hat {
+    guy:   log.foo
+    block: log.blockNumber
+    time:  log.timestamp
+  }
 
-```
-lock(amount) =>
-  deposits[msg.sender] += amount
 
-free(amount) =>
-  deposits[msg.sender] -= amount
-```
+// Vote - assign weight to a Slate
+On event LogNote(sig: 'vote(bytes32)') => log
+  insert Vote {
+    guy:   log.guy
+    slate: log.foo
+    block: log.blockNumber
+    time:  log.timestamp
+  }
+  // TODO - update approvals via trigger
+  Slate(id: log.foo).each(yay) =>
+    Approval(guy: yay) {
+      weight: Deposit(guy: log.guy).sum
+    }
 
-### Etch - create a slate
-
-```
-etch(candidates) =>
-  slates[sha] = candidates
-```
-
-### Vote - assign weight to a slate
-
-```
-vote(sha) =>
-  votes[msg.sender] = sha
-  slate[sha].each =>
-    approvals[candidate] = (approvals[candidate] + deposits[msg.sender])
-```
-
-### Promote a top candidate to hat
-
-```
-lift(address) =>
-  approvals[whom] > approvals[hat]
-  hat = address
 ```
