@@ -9,9 +9,11 @@ contract Chief {
   description: "DSChief approval voting"
 }
 
+#
 type Vote {
   guy: Address
-  slate: String
+  slate(id: Address): Slate
+  amt: Float
   block: Int
   time: Datetime
   tx: String
@@ -28,14 +30,14 @@ type Approval {
 type Deposit {
   guy: Address
   act: String
-  arg: Float
+  amt: Float
   block: Int
   time: Datetime
   tx: String
 }
 
 type Slate {
-  id: String
+  id: Keccak256 index
   yays: [Address]
   block: Int
   time: Datetime
@@ -58,6 +60,7 @@ event LogNote(sig: 'lock(uint)') {
     time:  event.timestamp
     tx:    event.transactionHash
   }
+  // TODO - update approvals via trigger
 }
 
 event LogNote(sig: 'free(uint)') {
@@ -69,6 +72,7 @@ event LogNote(sig: 'free(uint)') {
     time:  event.timestamp
     tx:    event.transactionHash
   }
+  // TODO - update approvals via trigger
 }
 
 event Etch {
@@ -86,7 +90,6 @@ event LogNote(sig: 'lift(address)') {
   }
 }
 
-
 event LogNote(sig: 'vote(bytes32)') {
   Vote.create {
     guy:   event.guy
@@ -94,10 +97,30 @@ event LogNote(sig: 'vote(bytes32)') {
     block: event.blockNumber
     time:  event.timestamp
   }
-  // TODO - update approvals via trigger
-  Slate(id: event.foo).each(yay) =>
-    Approval(guy: yay) {
-      weight: Deposit(guy: event.guy).sum
+  Slate(id: event.foo).yays.each => yay {
+    Approval(guy: yay).set {
+      amt: Chief.call approvals[yay]
     }
+  }
+}
+
+type Query {
+  allDeposits(args): [Deposit]
+  allSlates(args): [Slate]
+  allDeposits(args): [Vote]
+  allDeposits(args): [Approval]
+}
+
+sql {
+  create function approve() returns trigger AS $vote$
+  begin
+  // TODO
+  end;
+$vote$ language plpgsql;
+
+create trigger vote
+  after insert on vote
+  for each row
+  execute_procedure approve();
 }
 ```

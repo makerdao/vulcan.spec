@@ -39,7 +39,7 @@ event LogNote(sig: 'poke(bytes32)') {
 }
 
 type Query {
-  allPokes(...): [Poke]
+  allPokes(args): [Poke]
 }
 ```
 

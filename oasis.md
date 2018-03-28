@@ -57,7 +57,7 @@ event LogMake {
 event LogTake {
   Trade.create {
     id: event.id
-    pair: Dict.pairs(event.pair)
+    pair: Pairs(event.pair)
     maker: event.maker
     makerAmt: event.give_amt
     makerGem: event.pay_gem
@@ -76,15 +76,13 @@ event LogKill {
   }
 }
 
-type Dict {
-  pairs: {
-    0x1: 'MKR/WETH',
-    0x2: 'MKR/DAI'
-  }
+dict Pairs {
+  0x1: 'MKR/WETH',
+  0x2: 'MKR/DAI'
 }
 
 type Query {
-  allOrders(...): [Order]
-  allTrades(...): [Trade]
+  allOrders(args [Order]
+  allTrades(args): [Trade]
 }
 ```

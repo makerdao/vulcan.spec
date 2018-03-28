@@ -44,8 +44,7 @@ type CupInterval {
   time: Datetime
 }
 
-type Cup {
-  CupAction
+type Cup implements CupAction {
   actions: [CupAction]
   history: [CupInterval]
 }
