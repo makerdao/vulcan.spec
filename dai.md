@@ -12,6 +12,7 @@ contract Bin = {
 }
 
 type Ilk {
+  id: Int
   spot: Int
   rate: Int
   line: Float
@@ -27,24 +28,38 @@ type Urn {
   art: Float
 }
 
-form
- - create ilk
+event Form {
+  Ilk.create {
+    id: event.id
+    spot: event.spot
+    rate: event.rate
+    line: event.line
+    art: 0
+    gem: event.gem
+    flip: event.flip
+    block: event.blockNumber
+    time: event.timestamp
+    tx: event.transactionHash
+  }
+}
 
-file
- - update ilk
+event File|Fuss {
+  Ilk.create
+}
 
-fuss
- - set ilk flipper
+event Frob {
+  Urn.create {
+    ilk: event.ilk
+    guy: event.guy
+    ink: event.ink
+    art: event.art
+    block: event.blockNumber
+    time: event.timestamp
+    tx: event.transactionHash
+  }
+}
 
-frob
- - update urn (ink & art)
-
-bump
- - public lock
-
-calm - ilk debt ceiling not exceeded
-cool - debt has decreased
-safe - cdp is not risky
-nice - risk has decreased
-
-spot = tag / (par . mat)
+event Bump {
+  Urn.create
+}
+```
