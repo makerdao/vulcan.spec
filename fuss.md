@@ -1,81 +1,67 @@
 ## Fuss auctions
 
-Collateral Auction - pie for gem
-
 ```
-contract Flap = {
+contract Flip|Flap|Flop = {
   version: 1.0
   lib: rainbreak/fuss
   address: {
     mainnet: ???
     kovan: ???
   }
-  desc: "Flap(WETH,DAI)"
+  desc: "Flip(bin, ilk, pie, gem)"
 }
+
+Distinct on id order latest
 
 type Bid {
   id:  Int
-  gal: Address     // gem receiver
-  lot: Decimal     // pie for sale
-  guy: Address     // high bidder (msg.sender)
-  bid: Decimal     // gems paid
-  tic: Datetime    // time of last bid
-  end: Datetime    // max auction duration
+  gal: Address  // gem seller bin
+  tat: Address  // gem token
+  bid: Decimal  // gem amount
+  guy: Address  // high bidder (msg.sender)
+  tit: Address  // pie token
+  lot: Decimal  // pie amount
+  tab: Decimal  // total pie wanted
+  tic: Datetime // time of last bid
+  end: Datetime // max auction duration
+  lad: Address  // cdp owner
+  src: Address  // auction contract
   block: Int
   time: Datetime
   tx: String
 }
 
-kick
-  - create bid
-  - pull lot amount of pie from sender
-tend
-  - pull higher bid of gem
-  - push previous bid of gem
-deal
-  - push pie
-  - delete auction
-```
-
-Buy & Burn Auction
-Sell gems up to a given amount of pie
-
-```
-contract Flip = {
-  version: 1.0
-  lib: rainbreak/fuss
-  address: {
-    mainnet: ???
-    kovan: ???
+event Kick {
+  Bid.create {
+    id:  event.id
+    gal: event.gal
+    tat: event.gem
+    bid: event.bid
+    guy: event.guy
+    tit: event.pie
+    lot: event.lot
+    tab: event.tab
+    tic: event.tic
+    end: event.end
+    lad: event.lad
+    src: event.src
+    block: event.blockNumber
+    time: event.timestamp
+    tx: event.transactionHash
   }
-  desc: "Flip(0x01, MKR:WETH)"
 }
 
-type Bid {
-  id:  Int
-  gal: Address     // pie receiver
-  lot: Decimal     // gem for sale
-  guy: Address     // high bidder (msg.sender)
-  bid: Decimal     // pie paid
-  tab: Decimal     // total pie wanted
-  tic: Datetime    // time of last bid
-  end: Datetime    // max auction duration
-  lad: Address     // forgone gem receiver
-  block: Int
-  time: Datetime
-  tx: String
+event Tend {
+  Bid.create
 }
 
-kick
-  - create bid
-  - pull lot amount of gem from sender
-tend
-  - pull higher bid of pie
-  - push previous bid of pie
-dent
-  - move bid of pie from msg.sender to bid.guy
-  - push remaining pie to lad
-deal
-  - push gem
-  - delete auction
+event Dent {
+  Bid.create
+}
+
+event Deal {
+  Bid(id: event.id).set {
+    completed: true
+  }
+}
 ```
