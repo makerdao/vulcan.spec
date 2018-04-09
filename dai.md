@@ -19,14 +19,24 @@ type Ilk {
   art: Float
   gem: Address
   flip: Address
+  block: Int
+  time: Datetime
+  tx: String
 }
 
 type Urn {
-  ilk: Int
+  ilk: Int { left join ilk on block }
   guy: Address
   ink: Float
   art: Float
+  block: Int
+  time: Datetime
+  tx: String
 }
+
+join Urn::Ilk { left join ilk on urn.block = ilk.block }
+
+attribute Urn::tab { art * ilk.rate }
 
 event Form {
   Ilk.create {
@@ -62,4 +72,21 @@ event Frob {
 event Bump {
   Urn.create
 }
+```
+
+```
+views:
+  ilks.sql
+```
+
+### Example Queries
+
+Don't mix data & query in definitions
+
+TODO
+
+Convention for retrieving latest object vs entire history of objects.
+
+```
+
 ```
