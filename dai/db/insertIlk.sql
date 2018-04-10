@@ -1,3 +1,6 @@
+Has 3 objects in scope:
+event, msg and data
+
 INSERT INTO public.ilks (
   id,
   spot,
@@ -18,9 +21,9 @@ VALUES (
   ${event.art},
   ${event.gem},
   ${event.flip,
-  ${event.block},
-  ${event.time},
-  ${event.tx}
+  ${event.blockNumber},
+  to_timestamp(${event.timestamp}),
+  ${event.transactionHash}
 )
 ON CONFLICT (
   tx
