@@ -2,18 +2,31 @@
 
 name = "Dai bin"
 version = "1.0"
-desc = "Multi-collateral Dai"
-address = {ethlive = "0x01", kovan = "0x02"}
+lib = rainbreak/coins
 abi = "abi/bin.json"
+
+[contract.address]
+
+mainnet = ???
 
 [[contract.events]]
 
-sig = "Form(ilk uint256)"
+sig = "Form(uint256 id, address gem)"
 actions = ["db/form.sql"]
 
 [[contract.events]]
 
-sig = "Frob(bytes32 ilk, uint256 ilk, uint256 art)"
+sig = "Fuss(bytes32 ilk, address flip)"
+actions = ["db/???.sql"]
+
+[[contract.events]]
+
+sig = "File(bytes32 ilk, uint spot, uint rate, uint line)"
+actions = ["db/???.sql"]
+
+[[contract.events]]
+
+sig = "Frob(bytes32 ilk, address guy, uint ink, uint art)"
 actions = ["db/frob.sql"]
 
 [psql]

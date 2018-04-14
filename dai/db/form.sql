@@ -1,7 +1,4 @@
-Has 3 objects in scope:
-event, msg and data
-
-INSERT INTO public.ilks (
+INSERT INTO dai.ilk (
   id,
   spot,
   rate,
@@ -14,18 +11,16 @@ INSERT INTO public.ilks (
   tx,
 )
 VALUES (
-  ${event.id},
-  ${event.spot},
-  ${event.rate},
-  ${event.line},
-  ${event.art},
+  ${event.ilk},
+  NULL,
+  NULL,
+  NULL,
+  0
   ${event.gem},
-  ${event.flip,
+  NULL,
   ${event.blockNumber},
   to_timestamp(${event.timestamp}),
   ${event.transactionHash}
 )
-ON CONFLICT (
-  tx
-)
+ON CONFLICT ( id tx)
 DO NOTHING
