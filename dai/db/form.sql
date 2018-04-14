@@ -1,23 +1,17 @@
 INSERT INTO dai.ilk (
   id,
-  spot,
-  rate,
-  line,
-  art,
   gem,
-  flip,
+  art,
+  act,
   block,
   time,
   tx,
 )
 VALUES (
   ${event.ilk},
-  NULL,
-  NULL,
-  NULL,
-  0
   ${event.gem},
-  NULL,
+  0,
+  'form',
   ${event.blockNumber},
   to_timestamp(${event.timestamp}),
   ${event.transactionHash}

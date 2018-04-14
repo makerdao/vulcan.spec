@@ -16,17 +16,17 @@ actions = ["db/form.sql"]
 
 [[contract.events]]
 
-sig = "Fuss(bytes32 ilk, address flip)"
-actions = ["db/???.sql"]
+sig = "Fuss(bytes32 id, address flip)"
+actions = ["db/fuss.sql"]
 
 [[contract.events]]
 
-sig = "File(bytes32 ilk, uint spot, uint rate, uint line)"
-actions = ["db/???.sql"]
+sig = "File(bytes32 id, uint spot, uint rate, uint line)"
+actions = ["db/file.sql"]
 
 [[contract.events]]
 
-sig = "Frob(bytes32 ilk, address guy, uint ink, uint art)"
+sig = "Frob(bytes32 id, address guy, uint ink, uint art)"
 actions = ["db/frob.sql"]
 
 [psql]

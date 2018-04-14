@@ -1,8 +1,6 @@
 UPDATE dai.ilk SET
-  spot  = ${event.spot},
-  rate  = ${event.rate},
-  line  = ${event.line},
-  act   = 'file',
+  flip = ${event.flip},
+  act = 'fuss',
   block = ${event.blockNumber},
   time  = to_timestamp(${event.timestamp}),
   tx    = ${event.transactionHash}
