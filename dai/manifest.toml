@@ -26,8 +26,14 @@ actions = ["db/file.sql"]
 
 [[contract.events]]
 
-sig = "Frob(bytes32 id, address guy, uint ink, uint art)"
+sig = "Frob(bytes32 id, address guy, uint ink, uint art, uint Art)"
 actions = ["db/frob.sql"]
+
+sig = "Bite()"
+actions = ["db/???.sql"]
+
+sig = "Bump()"
+actions = ["db/???.sql"]
 
 [psql]
 
