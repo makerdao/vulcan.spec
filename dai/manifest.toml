@@ -16,7 +16,7 @@ actions = ["db/form.sql"]
 
 [[contract.events]]
 
-sig = "Fuss(bytes32 id, address flip)"
+sig = "Fuss(bytes32 ilk, address flip)"
 actions = ["db/fuss.sql"]
 
 [[contract.events]]
