@@ -3,7 +3,6 @@
 name = "Oasis"
 version = "1.0"
 lib = "makerdao/maker-otc"
-abi = "abi/oasis.json"
 
 [contract.address]
 
