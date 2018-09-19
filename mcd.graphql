@@ -1,0 +1,56 @@
+type Ilk {
+  id: String
+  take: Float
+  rate: Float
+  spot: Float
+  line: Float
+  chop: Float
+  lump: Float
+  flip: Address
+  rho: Era
+  tax: Float
+  Ink: Float
+  Art: Float
+  events: [Event]
+  history: [Ilk]
+}
+
+type Urn {
+  ilk: Ilk
+  lad: Address
+  ink: Float
+  art: Float
+  ratio: Float
+  events: [Event]
+  history: [Urn]
+}
+
+type Bite {
+  id: Integer
+  ilk: Ilk
+  lad: Address
+  ink: Float
+  art: Float
+  tab: Float
+  flipped: Boolean
+  events: [Event]
+}
+
+type Sin {
+  era: Era
+  amt: Float
+  flogged: Boolean
+  events: [Event]
+}
+
+type Transfer {
+  src: Address
+  dst: Address
+  amt: Float
+  event: Event
+}
+
+type Era {
+  timestamp: Int
+  datetime: Datetime
+}

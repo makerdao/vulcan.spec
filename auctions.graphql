@@ -1,0 +1,26 @@
+type Bid {
+  id: Integer
+  guy: Address
+  tic: Era
+  end: Era
+  lot: Float
+  bid: Float
+  fess: Auction
+  gal: Address
+  urn: Address
+  tab: Address
+  dealt: Boolean
+  history: [Bid]
+  events: [Event]
+}
+
+enum: Fess {
+  FLIP
+  FLOP
+  FLAP
+}
+
+type: Auction {
+  lad: Address
+  fess: Fess
+}
