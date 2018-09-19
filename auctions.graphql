@@ -5,7 +5,7 @@ type Bid {
   end: Era
   lot: Float
   bid: Float
-  fess: Auction
+  market: Market
   gal: Address
   urn: Address
   tab: Address
@@ -14,13 +14,17 @@ type Bid {
   events: [Event]
 }
 
-enum: Fess {
+type: Market {
+  lad: Address
+  auction: Auction
+  base: Address
+  quote: Address
+  baseSymbol: String
+  quoteSymbol: String
+}
+
+enum: Auction {
   FLIP
   FLOP
   FLAP
-}
-
-type: Auction {
-  lad: Address
-  fess: Fess
 }
