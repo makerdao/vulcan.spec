@@ -1,0 +1,36 @@
+type Offer {
+  id:     Integer
+  market: Market
+  maker:  Address
+  lot:    Float
+  lotGem: Address
+  bid:    Float
+  bidGem: Address
+  price:  Float
+  filled: Boolean
+  killed: Boolean
+  history: [Offer]
+  events: [Event]
+}
+
+type Trade {
+  id:     Integer
+  market: Market
+  maker:  Address
+  taker:  Address
+  lot:    Float
+  lotGem: Address
+  bid:    Float
+  bidGem: Address
+  price:  Float
+  history: [Offer]
+  events: [Event]
+}
+
+type: Market {
+  pair: String # pair identifier e.g MKRDAI
+  base: Address
+  quote: Address
+  baseSymbol: String
+  quoteSymbol: String
+}
