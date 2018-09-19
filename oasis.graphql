@@ -1,36 +1,36 @@
 type Offer {
-  id:     Integer
-  market: Market
-  maker:  Address
-  lot:    Float
-  lotGem: Address
-  bid:    Float
-  bidGem: Address
-  price:  Float
-  filled: Boolean
-  killed: Boolean
-  history: [Offer]
-  events: [Event]
+  id:      Integer # unique identifier
+  market:  Market  # market detail
+  maker:   Address # msg.sender
+  lot:     Float   # lot amount
+  lotGem:  Address # lot token address
+  bid:     Float   # bid amount
+  bidGem:  Address # bid token address
+  price:   Float   # bid/lot price
+  filled:  Integer # 0 or a block number when fully executed
+  killed:  Integer # 0 or a block number when killed
+  trades:  [Trade] # trade history
+  event:   Event   # block, tx, event metadata
 }
 
 type Trade {
-  id:     Integer
-  market: Market
-  maker:  Address
-  taker:  Address
-  lot:    Float
-  lotGem: Address
-  bid:    Float
-  bidGem: Address
-  price:  Float
-  history: [Offer]
-  events: [Event]
+  id:      Integer # offer identifier
+  market:  Market  # market detail
+  maker:   Address # offer creator
+  taker:   Address # msg.sender
+  lot:     Float   # lot amount
+  lotGem:  Address # lot token address
+  bid:     Float   # bid amount
+  bidGem:  Address # bid token address
+  price:   Float   # bid/lot price
+  offer:   Offer   # corresponding offer
+  event:   Event   # block, tx, event metadata
 }
 
-type: Market {
-  pair: String # pair identifier e.g MKRDAI
-  base: Address
-  quote: Address
-  baseSymbol: String
-  quoteSymbol: String
+type Market {
+  pair:        String  # pair identifier e.g MKRDAI
+  base:        Address # base token address
+  quote:       Address # quote token address
+  baseSymbol:  String  # base symbol e.g MKR
+  quoteSymbol: String  # quote symbol e.g DAI
 }
