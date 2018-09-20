@@ -1,56 +1,71 @@
 type Ilk {
-  id: String
-  take: Float
-  rate: Float
-  spot: Float
-  line: Float
-  chop: Float
-  lump: Float
-  flip: Address
-  rho: Era
-  tax: Float
-  Ink: Float
-  Art: Float
-  events: [Event]
-  history: [Ilk]
+  id:   String    # ilk identifier e.g ETH
+  take: Float     # rate scaling factor
+  rate: Float     # debt scaling factor
+  spot: Float     # price feed with margin
+  line: Float     # debt ceiling
+  chop: Float     # liquidation penalty
+  lump: Float     # flip auction lot size
+  flip: Address   # flipper contract
+  rho: Era        # time of last drip
+  tax: Float      # tax
+  Ink: Float      # total encumbered Gem
+  Art: Float      # total debt outstanding
+  files: [Event]  # TODO - Event
 }
 
 type Urn {
-  ilk: Ilk
-  lad: Address
-  ink: Float
-  art: Float
-  ratio: Float
-  events: [Event]
-  history: [Urn]
+  ilk:   String  # getIlkById
+  guy:   Address # urn owner
+  ink:   Float   # locked gem
+  art:   Float   # outstanding debt
+  ratio: Float   # (ink * ilk.spot) / (art * ilk.rate)
+  safe:  Boolean # ratio > 1
+  frobs: [Event] # TODO - Event
 }
 
 type Bite {
-  id: Integer
-  ilk: Ilk
-  lad: Address
-  ink: Float
-  art: Float
-  tab: Float
-  flipped: Boolean
-  events: [Event]
+  id:      Integer  # flip id
+  ilk:     String   # getIlkById
+  urn:     Address  # urn owner
+  ink:     Float    # siezed ink
+  art:     Float    # siezed collateral
+  tab:     Float    # gem amount to recover
+  flipped: Integer  # true if gem has gone to auction
+  bid:     Bid      # Link to bid if flipped
+  tx:      Tx       # Bite event tx
 }
 
+# Sin queue
 type Sin {
-  era: Era
-  amt: Float
-  flogged: Boolean
-  events: [Event]
+  era:     Era      # bite timestamp
+  tab:     Float    # sin amount
+  flogged: Integer  # 0 or block number at flog
+  events:  [Event]  # Fess and flog events
 }
 
+# Vat dai movements
 type Transfer {
-  src: Address
-  dst: Address
-  amt: Float
-  event: Event
+  src:   Address # from
+  dst:   Address # to
+  amt:   Float   # amount
+  act:   Float   # vat action
+  tx:    Tx      # tx meta
+}
+
+# Transaction metadata
+type Tx {
+  transactionHash:  String
+  transactionIndex: Integer
+  blockHash:        String
+  blockNumber:      Integer
+  blockTimestamp:   Era
+  from:             Address
+  to:               Address
+  logs:             [Log]
 }
 
 type Era {
-  timestamp: Int
-  datetime: Datetime
+  int: Integer  # seconds since the epoch
+  iso: Datetime # ISO 8601 UTC
 }
