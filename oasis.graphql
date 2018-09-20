@@ -1,3 +1,4 @@
+# LogMake
 type Offer {
   id:      Integer # unique identifier
   market:  Market  # market detail
@@ -10,9 +11,10 @@ type Offer {
   filled:  Integer # 0 or a block number when fully executed
   killed:  Integer # 0 or a block number when killed
   trades:  [Trade] # trade history
-  event:   Event   # block, tx, event metadata
+  tx:      Tx      # block, tx metadata
 }
 
+# LogTake
 type Trade {
   id:      Integer # offer identifier
   market:  Market  # market detail
@@ -24,13 +26,38 @@ type Trade {
   bidGem:  Address # bid token address
   price:   Float   # bid/lot price
   offer:   Offer   # corresponding offer
-  event:   Event   # block, tx, event metadata
+  tx:      Tx      # block, tx metadata
 }
 
+# Registry
 type Market {
   pair:        String  # pair identifier e.g MKRDAI
   base:        Address # base token address
   quote:       Address # quote token address
   baseSymbol:  String  # base symbol e.g MKR
   quoteSymbol: String  # quote symbol e.g DAI
+}
+
+# Transaction metadata
+type Tx {
+  transactionHash:  String
+  transactionIndex: Integer
+  blockHash:        String
+  blockNumber:      Integer
+  blockTimestamp:   Era
+  from:             Address
+  to:               Address
+  logs:             [Log]
+}
+
+type Log {
+  logIndex:     Integer
+  address:      Address
+  data:         Data
+  returnValues: LogData
+}
+
+type Era {
+  int: Integer  # seconds since the epoch
+  iso: Datetime # ISO 8601 UTC
 }
