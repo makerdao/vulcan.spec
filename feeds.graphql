@@ -1,20 +1,7 @@
 type PriceFeed {
-  ilk:   Ilk
-  src:   Address # price feed owner
+  ilk:   String  # ilk identifier
+  src:   Address # price feed signer
   med:   Address # medianizer address
   val:   Float   # usd value
-  event: Event
-}
-
-type Event {
-  address:         Address
-  blockNumber:     Integer
-  transactionHash: String
-  logIndex:        Integer
-  signature:       String
-  id:              String
-  raw:             String
-  data:            {
-
-  }
+  tx:    Tx      # transaction meta
 }
