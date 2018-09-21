@@ -1,4 +1,4 @@
-type PriceFeed {
+type Feed {
   ilk:   String  # ilk identifier
   src:   Address # price feed signer
   med:   Address # medianizer address
