@@ -1,4 +1,9 @@
 type Ilk {
+
+  # Persisted ilks mapping
+  # Ilk state updated via `file` actions across multiple MCD contracts
+  # Ink and Art updated via `frob` and  `bite` events
+
   id:   String    # ilk identifier e.g ETH
   take: Float     # rate scaling factor
   rate: Float     # debt scaling factor
@@ -11,29 +16,129 @@ type Ilk {
   tax: Float      # tax
   Ink: Float      # total encumbered Gem
   Art: Float      # total debt outstanding
-  files: [Event]  # TODO - Event
+  files: [File]   # risk param state change events
+
 }
 
 type Urn {
-  ilk:   String  # getIlkById
-  guy:   Address # urn owner
-  ink:   Float   # locked gem
-  art:   Float   # outstanding debt
-  ratio: Float   # (ink * ilk.spot) / (art * ilk.rate)
-  safe:  Boolean # ratio > 1
-  frobs: [Event] # TODO - Event
+
+  # Persisted urns mapping
+  # Urn state updated via `frob` and `bite` actions.
+
+  ilkId:  String  # unique identifier e.g. ETH
+  ilk:    Ilk     # ilk object
+  lad:    Address # urn owner public key
+  ink:    Float   # locked gem
+  art:    Float   # outstanding debt
+  rat:    Float   # (ink * ilk.spot) / (art * ilk.rate)
+  safe:   Boolean # ratio > 1
+  frobs:  [Frob]  # state change events
+  bites:  [Bite]  # liquidation events
 }
 
+# Ilk State change event
+type File {
+  ilkId: String   # ilk identifier
+  what:  String   # field to update
+  addr:  Address  # present when data is address
+  val:   Float    # present when data is a number
+  tx:    Tx       # transaction meta
+}
+
+# Ilk, Urn State change event
+type Frob {
+  ilkId: String   # ilk identifier
+  lad:   String   # urn owner
+  dink:  Float    # ink delta
+  dart:  Float    # art delta
+  tx:    Tx       # transaction meta
+}
+
+# Ilk, Urn State change event
 type Bite {
+  ilkId:  String   # ilk identifier
+  lad:    String   # urn owner
+  flipId: Integer  # flip identifier
+  tx:     Tx       # transaction meta
+}
+
+type Flip {
+
+  # Persisted flips mapping
+  # Flip state updated via `bite` and `flip` actions.
+
   id:      Integer  # flip id
-  ilk:     String   # getIlkById
-  urn:     Address  # urn owner
+  ilkId:   String   # ilk identifier
+  urn:     Address  # urn owner (Urn.lad)
   ink:     Float    # siezed ink
   art:     Float    # siezed collateral
   tab:     Float    # gem amount to recover
   flipped: Integer  # true if gem has gone to auction
-  bid:     Bid      # Link to bid if flipped
-  tx:      Tx       # Bite event tx
+  bidId:   Integer  # Bid identifier if flipped
+  bid:     Bid      # Bid object
+
+}
+
+type Query {
+
+   # TODO
+   # Aggregate queries e.g Ink, Art and Spot time series
+
+   # Collection Arguments
+   # first: Only read the first `n` values # of the set.
+   # last: Only read the last `n` values # of the set.
+   # offset: Skip the first `n` values from our `after`
+   # cursor, an alternative to cursor based pagination. May
+   # not be used with `last`.
+   # before: Read all values in the set
+   # before (above) this cursor.
+   # after: Read all values in the set
+   # after (below) this cursor.
+   # orderBy: The method to use when ordering `OasisTrade`.
+   # condition: A condition to be used in determining which values should be
+   # returned by the collection.
+   # filter: A filter to be used in determining which values should be returned
+   # by the collection.
+   allIlks(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   IlkOrderBy,
+     condition: IlkCondition,
+     filter:    IlkFilter
+   ): [Ilk]
+
+   # Arguments
+   # id: Ilk identifier e.g ETH
+   # blockNumber: Optionally retrieve Ilk state at a given block height
+   getIlk(
+     id: String!
+     blockNumber: Int
+   ): Ilk
+
+   allUrns(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   IlkOrderBy,
+     condition: IlkCondition,
+     filter:    IlkFilter
+   ): [Urn]
+
+   # Arguments
+   # ilk: Ilk identifier e.g ETH
+   # urn: Urn owner public key
+   # blockNumber: Optionally retrieve Urn state at a given block height
+   getUrn(
+     ilkId: String!
+     lad: String!
+     blockNumber: Int
+   ): Urn
+
 }
 
 # Sin queue
