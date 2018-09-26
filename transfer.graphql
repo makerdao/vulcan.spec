@@ -1,0 +1,34 @@
+# Vat Dai movements
+type DaiTransfer {
+  src:   Address # from
+  dst:   Address # to
+  amt:   Float   # amount
+  act:   DaiAct  # vat dai action
+  tx:    Tx      # tx meta
+}
+
+# Dai transfer actions
+enum DaiAct {
+  MOVE
+  TUNE
+  HEAL
+  FOLD
+}
+
+# Vat Gem movements
+type GemTransfer {
+  src:   Address # from
+  dst:   Address # to
+  amt:   Float   # amount
+  act:   GemAct  # vat gem action
+  tx:    Tx      # tx meta
+}
+
+# Gem transfer actions
+enum GemAct {
+  SLIP
+  FLUX
+  TUNE
+  GRAB
+  TOLL
+}
