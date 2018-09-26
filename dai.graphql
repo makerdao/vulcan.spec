@@ -1,0 +1,10 @@
+# Vat dai movements
+type Transfer {
+  src:   Address # from
+  dst:   Address # to
+  amt:   Float   # amount
+  act:   Float   # vat action
+  tx:    Tx      # tx meta
+}
+
+# TODO detail vat events

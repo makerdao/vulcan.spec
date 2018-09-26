@@ -17,6 +17,8 @@ type Ilk {
   Ink: Float      # total encumbered Gem
   Art: Float      # total debt outstanding
   files: [File]   # risk param state change events
+  bites: [Bite]   # ilk bite events
+  frobs: [Frob]   # ilk frob events
 
 }
 
@@ -34,32 +36,7 @@ type Urn {
   safe:   Boolean # ratio > 1
   frobs:  [Frob]  # state change events
   bites:  [Bite]  # liquidation events
-}
 
-# Ilk State change event
-type File {
-  ilkId: String   # ilk identifier
-  what:  String   # field to update
-  addr:  Address  # present when data is address
-  val:   Float    # present when data is a number
-  tx:    Tx       # transaction meta
-}
-
-# Ilk, Urn State change event
-type Frob {
-  ilkId: String   # ilk identifier
-  lad:   String   # urn owner
-  dink:  Float    # ink delta
-  dart:  Float    # art delta
-  tx:    Tx       # transaction meta
-}
-
-# Ilk, Urn State change event
-type Bite {
-  ilkId:  String   # ilk identifier
-  lad:    String   # urn owner
-  flipId: Integer  # flip identifier
-  tx:     Tx       # transaction meta
 }
 
 type Flip {
@@ -77,6 +54,68 @@ type Flip {
   bidId:   Integer  # Bid identifier if flipped
   bid:     Bid      # Bid object
 
+}
+
+type Sin {
+
+  # Persisted sin queue mapping
+  # Sin state updated via `Vow.fess` and `Vow.flog` actions.
+  # TODO - consider exposing fess and flog events over GraphQL
+
+  era:     Era      # bite timestamp
+  tab:     Float    # sin amount
+  flogged: Integer  # 0 or block number at flog
+
+}
+
+type Tx {
+
+  # Transaction metadata
+  # Common to all transaction events
+
+  transactionHash:  String
+  transactionIndex: Integer
+  blockHash:        String
+  blockNumber:      Integer
+  blockTimestamp:   Era
+  from:             Address
+  to:               Address
+
+}
+
+type Era {
+
+  # Block timestamp
+
+  int: Integer  # seconds since the epoch
+  iso: Datetime # ISO 8601 UTC
+
+}
+
+# State change Event
+type File {
+  ilkId: String   # ilk identifier
+  what:  String   # field to update
+  addr:  Address  # present when data is address
+  val:   Float    # present when data is a number
+  tx:    Tx       # transaction meta
+}
+
+# State change Event
+type Frob {
+  ilkId: String   # ilk identifier
+  lad:   String   # urn owner
+  dink:  Float    # ink delta
+  dart:  Float    # art delta
+  tx:    Tx       # transaction meta
+}
+
+# State change Event
+type Bite {
+  ilkId:  String   # ilk identifier
+  lad:    String   # urn owner
+  flipId: Integer  # flip identifier
+  tx:     Tx       # transaction meta
 }
 
 type Query {
@@ -99,6 +138,7 @@ type Query {
    # returned by the collection.
    # filter: A filter to be used in determining which values should be returned
    # by the collection.
+
    allIlks(
      first:     Int,
      last:      Int,
@@ -110,12 +150,9 @@ type Query {
      filter:    IlkFilter
    ): [Ilk]
 
-   # Arguments
-   # id: Ilk identifier e.g ETH
-   # blockNumber: Optionally retrieve Ilk state at a given block height
    getIlk(
      id: String!
-     blockNumber: Int
+     blockNumber: Int # optionally retrieve ilk state at a given block height
    ): Ilk
 
    allUrns(
@@ -124,53 +161,47 @@ type Query {
      offset:    Int,
      before:    Cursor,
      after:     Cursor,
-     orderBy:   IlkOrderBy,
-     condition: IlkCondition,
-     filter:    IlkFilter
+     orderBy:   UrnOrderBy,
+     condition: UrnCondition,
+     filter:    UrnFilter
    ): [Urn]
 
-   # Arguments
-   # ilk: Ilk identifier e.g ETH
-   # urn: Urn owner public key
-   # blockNumber: Optionally retrieve Urn state at a given block height
    getUrn(
      ilkId: String!
      lad: String!
-     blockNumber: Int
+     blockNumber: Int # optionally retrieve ilk state at a given block height
    ): Urn
 
-}
+   allFiles(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   FileOrderBy,
+     condition: FileCondition,
+     filter:    FileFilter
+   ): [File]
 
-# Sin queue
-type Sin {
-  era:     Era      # bite timestamp
-  tab:     Float    # sin amount
-  flogged: Integer  # 0 or block number at flog
-  events:  [Event]  # Fess and flog events
-}
+   allFrobs(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   FrobOrderBy,
+     condition: FrobCondition,
+     filter:    FrobFilter
+   ): [Frob]
 
-# Vat dai movements
-type Transfer {
-  src:   Address # from
-  dst:   Address # to
-  amt:   Float   # amount
-  act:   Float   # vat action
-  tx:    Tx      # tx meta
-}
-
-# Transaction metadata
-type Tx {
-  transactionHash:  String
-  transactionIndex: Integer
-  blockHash:        String
-  blockNumber:      Integer
-  blockTimestamp:   Era
-  from:             Address
-  to:               Address
-  logs:             [Log]
-}
-
-type Era {
-  int: Integer  # seconds since the epoch
-  iso: Datetime # ISO 8601 UTC
+   allBites(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BiteOrderBy,
+     condition: BiteCondition,
+     filter:    BiteFilter
+   ): [Bite]
 }
