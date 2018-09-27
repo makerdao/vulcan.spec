@@ -4,21 +4,21 @@ type Ilk {
   # Ilk state updated via `file` actions across multiple MCD contracts
   # Ink and Art updated via `frob` and  `bite` events
 
-  id:   String    # ilk identifier e.g ETH
-  take: Float     # rate scaling factor
-  rate: Float     # debt scaling factor
-  spot: Float     # price feed with margin
-  line: Float     # debt ceiling
-  chop: Float     # liquidation penalty
-  lump: Float     # flip auction lot size
-  flip: Address   # flipper contract
-  rho: Era        # time of last drip
-  tax: Float      # tax
-  Ink: Float      # total encumbered Gem
-  Art: Float      # total debt outstanding
-  files: [File]   # risk param state change events
-  bites: [Bite]   # ilk bite events
-  frobs: [Frob]   # ilk frob events
+  id:    String  # ilk identifier e.g ETH
+  take:  Float   # rate scaling factor
+  rate:  Float   # debt scaling factor
+  spot:  Float   # price feed with margin
+  line:  Float   # debt ceiling
+  chop:  Float   # liquidation penalty
+  lump:  Float   # flip auction lot size
+  flip:  Address # flipper contract
+  rho:   Era     # time of last drip
+  tax:   Float   # tax
+  Ink:   Float   # total encumbered Gem
+  Art:   Float   # total debt outstanding
+  files: [File]  # risk param state change events
+  bites: [Bite]  # ilk bite events
+  frobs: [Frob]  # ilk frob events
 
 }
 
@@ -59,13 +59,13 @@ type Flip {
 type Sin {
 
   # Persisted sin queue mapping
-  # Sin state updated via `Vow.fess` and `Vow.flog` actions.
-  # TODO - consider exposing fess and flog events over GraphQL
+  # Sin state updated via `Cat.bite` and `Vow.flog` actions.
 
   era:     Era      # bite timestamp
   tab:     Float    # sin amount
-  flogged: Integer  # 0 or block number at flog
-
+  bites:   [Bite]   # bite events
+  flog:    Flog     # flog event
+  flogged: Boolean  # true if flogged
 }
 
 # State change Event
@@ -90,7 +90,13 @@ type Frob {
 type Bite {
   ilkId:  String   # ilk identifier
   lad:    String   # urn owner
+  tab:    Float    # debt amount
   flipId: Integer  # flip identifier
+  tx:     Tx       # transaction meta
+}
+
+# State change Event
+type Flog {
   tx:     Tx       # transaction meta
 }
 
