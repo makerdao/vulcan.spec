@@ -37,27 +37,3 @@ type Market {
   baseSymbol:  String  # base symbol e.g MKR
   quoteSymbol: String  # quote symbol e.g DAI
 }
-
-# Transaction metadata
-type Tx {
-  transactionHash:  String
-  transactionIndex: Integer
-  blockHash:        String
-  blockNumber:      Integer
-  blockTimestamp:   Era
-  from:             Address
-  to:               Address
-  logs:             [Log]
-}
-
-type Log {
-  logIndex:     Integer
-  address:      Address
-  data:         Data
-  returnValues: LogData
-}
-
-type Era {
-  int: Integer  # seconds since the epoch
-  iso: Datetime # ISO 8601 UTC
-}

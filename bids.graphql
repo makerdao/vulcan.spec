@@ -57,11 +57,6 @@ type Market {
   quoteSymbol: String  # quote symbol e.g DAI
 }
 
-type Era {
-  int: Integer  # seconds since the epoch
-  iso: Datetime # ISO 8601 UTC
-}
-
 type Query {
 
    allBids(
