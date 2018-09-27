@@ -1,16 +1,50 @@
 type Bid {
+
+  # Persisted bids mapping from flipper, flapper and flopper contracts
+  # Initial state is set via `kick` actions.
+  # Bid state is updated via `tend`  and `dent` actions.
+  # Final bid state is set via `deal` actions.
+
   id:      Integer  # unique bid identifier
   guy:     Address  # highest bidder
   tic:     Era      # bid expiry
   end:     Era      # auction expiry
   lot:     Float    # lot amount
   bid:     Float    # bid amount
-  market:  Market   # market detail
   gal:     Address  # receives auction proceeds
   urn:     Address  # urn owner (flip only)
   tab:     Address  # amount to raise - (tend/dent phase switch) (flip only)
   dealt:   Boolean  # true if auction has been settled
-  events:  [Event]  # bid history - TODO Event
+  market:  Market   # market detail
+  type:    BidType  # auction type - flip | flap | flop
+  events:  BidEvent # bid state change events
+}
+
+# Auction types
+enum BidType {
+  FLIP
+  FLAP
+  FLOP
+}
+
+# Bid actions
+enum BidAct {
+  KICK
+  TEND
+  DENT
+  DEAL
+}
+
+type BidEvent {
+  bidId: Integer # bid identifier
+  bid:   Bid     # bid object
+  act:   BidAct  # bid action
+  lot:   Float   # lot or null
+  bid:   Float   # bid or null
+  guy:   Address # msg.sender
+  tic:   Era     # tic or null
+  end:   Era     # end or null
+  tx:    Tx      # transaction meta
 }
 
 # Registry
@@ -26,4 +60,35 @@ type Market {
 type Era {
   int: Integer  # seconds since the epoch
   iso: Datetime # ISO 8601 UTC
+}
+
+type Query {
+
+   allBids(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BidOrderBy,
+     condition: BidCondition,
+     filter:    BidFilter
+   ): [Ilk]
+
+   getBid(
+     id: Identifier!
+     blockNumber: Int # optionally retrieve bid state at a given block height
+   ): Bid
+
+   allBidEvents(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BidEventOrderBy,
+     condition: BidEventCondition,
+     filter:    BidEventFilter
+   ): [BidEvent]
+
 }
