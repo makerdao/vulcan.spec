@@ -5,19 +5,19 @@ type Bid {
   # Bid state is updated via `tend`  and `dent` actions.
   # Final bid state is set via `deal` actions.
 
-  id:      Integer  # unique bid identifier
-  guy:     Address  # highest bidder
-  tic:     Era      # bid expiry
-  end:     Era      # auction expiry
-  lot:     Float    # lot amount
-  bid:     Float    # bid amount
-  gal:     Address  # receives auction proceeds
-  urn:     Address  # urn owner (flip only)
-  tab:     Address  # amount to raise - (tend/dent phase switch) (flip only)
-  dealt:   Boolean  # true if auction has been settled
-  market:  Market   # market detail
-  type:    BidType  # auction type - flip | flap | flop
-  events:  BidEvent # bid state change events
+  id:      Integer    # unique bid identifier
+  guy:     Address    # highest bidder
+  tic:     Era        # bid expiry
+  end:     Era        # auction expiry
+  lot:     Float      # lot amount
+  bid:     Float      # bid amount
+  gal:     Address    # receives auction proceeds
+  urn:     Address    # urn owner (flip only)
+  tab:     Address    # amount to raise - (tend/dent phase switch) (flip only)
+  dealt:   Boolean    # true if auction has been settled
+  market:  Market     # market detail
+  type:    BidType    # auction type - flip | flap | flop
+  events:  [BidEvent] # bid state change events
 }
 
 # Auction types
