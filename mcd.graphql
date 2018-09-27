@@ -120,9 +120,6 @@ type Bite {
 
 type Query {
 
-   # TODO
-   # Aggregate queries e.g Ink, Art and Spot time series
-
    # Collection Arguments
    # first: Only read the first `n` values # of the set.
    # last: Only read the last `n` values # of the set.
@@ -150,6 +147,12 @@ type Query {
      filter:    IlkFilter
    ): [Ilk]
 
+   allIlkStates(
+     # Collection arguments
+     # ...
+     interval: String # optionally specify a postgres aggregation interval e.g '1 day'
+   ): [Ilk]
+
    getIlk(
      id: String!
      blockNumber: Int # optionally retrieve ilk state at a given block height
@@ -171,6 +174,12 @@ type Query {
      lad: String!
      blockNumber: Int # optionally retrieve ilk state at a given block height
    ): Urn
+
+   allUrnStates(
+     # Collection arguments
+     # ...
+     interval: String # optionally specify a postgres aggregation interval e.g '1 day'
+   ): [Urn]
 
    allFiles(
      first:     Int,

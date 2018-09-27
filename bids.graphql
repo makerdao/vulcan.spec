@@ -73,12 +73,24 @@ type Query {
      orderBy:   BidOrderBy,
      condition: BidCondition,
      filter:    BidFilter
-   ): [Ilk]
+   ): [Bid]
 
    getBid(
-     id: Identifier!
+     id:          Int!
      blockNumber: Int # optionally retrieve bid state at a given block height
    ): Bid
+
+   allBidStates(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BidOrderBy,
+     condition: BidCondition,
+     filter:    BidFilter
+     interval:  String # optionally specify a postgres aggregation interval e.g '1 day'
+   ): [Bid]
 
    allBidEvents(
      first:     Int,
