@@ -1,5 +1,9 @@
 # LogMake
 type Offer {
+
+  # Persisted LogMake events
+  # Status is updated when Offers is either filled (LogTrade) or killed (LogKill).
+
   id:      Integer # unique identifier
   market:  Market  # market detail
   maker:   Address # msg.sender
@@ -11,12 +15,16 @@ type Offer {
   filled:  Integer # 0 or a block number when fully executed
   killed:  Integer # 0 or a block number when killed
   trades:  [Trade] # trade history
-  tx:      Tx      # block, tx metadata
+  tx:      Tx      # tx meta
 }
 
 # LogTake
 type Trade {
-  id:      Integer # offer identifier
+
+  # Persisted LogTake events representing trade history for an Offer
+  # Trade status is never updated
+
+  offerId: Integer # offer identifier
   market:  Market  # market detail
   maker:   Address # offer creator
   taker:   Address # msg.sender
@@ -26,14 +34,65 @@ type Trade {
   bidGem:  Address # bid token address
   price:   Float   # bid/lot price
   offer:   Offer   # corresponding offer
-  tx:      Tx      # block, tx metadata
+  tx:      Tx      # tx meta
 }
 
-# Registry
+type MarketData (
+  pair:    String # pair identifier e.g. MKRDAI
+  buyVol:  Float  # total buy volume
+  sellVol: Float  # total sell volume
+  price:   Float  # volume weighted price
+  high:    Float  # highest price
+  low:     Float  # lowest price
+);
+
 type Market {
+
+  # Registry - allow offers & trades to be grouped and filtered by trading pair
+
   pair:        String  # pair identifier e.g MKRDAI
-  base:        Address # base token address
-  quote:       Address # quote token address
+  baseGem:     Address # base token address
+  quoteGem:    Address # quote token address
   baseSymbol:  String  # base symbol e.g MKR
   quoteSymbol: String  # quote symbol e.g DAI
+}
+
+type Query {
+
+   allOffers(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   OfferOrderBy,
+     condition: OfferCondition,
+     filter:    OfferFilter
+   ): [Offer]
+
+   allTrades(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   TradeOrderBy,
+     condition: TradeCondition,
+     filter:    TradeFilter
+   ): [Trade]
+
+   orderBook(): [Offer]
+
+   allMarketsData(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   MarketDataOrderBy,
+     condition: MarketDataCondition,
+     filter:    MarketDataFilter
+     interval: String # optionally specify a postgres aggregation interval e.g '1 day'
+   ): [MarketData]
+
 }
