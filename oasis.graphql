@@ -44,6 +44,8 @@ type MarketData (
   price:   Float  # volume weighted price
   high:    Float  # highest price
   low:     Float  # lowest price
+  first:   Float  # opening price for this time period
+  last:    Float  # closing price for this time period
 );
 
 type Market {
