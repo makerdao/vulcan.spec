@@ -19,6 +19,7 @@ enum DaiAct {
 type GemTransfer {
   src:   Address # from
   dst:   Address # to
+  ilk:   Address # ilk address
   amt:   Float   # amount
   act:   GemAct  # vat gem action
   tx:    Tx      # tx meta
