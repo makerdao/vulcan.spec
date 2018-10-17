@@ -1,0 +1,44 @@
+type Proposal {
+  id: String
+  title: String
+  ipfsHash: String
+  startTime: Int # i.e. a unix timestamp; some other time type is also ok
+  endTime: Int
+  status: ProposalStatus
+  options: [ProposalOption]
+}
+
+enum ProposalStatus {
+  DISCUSSION
+  WITHDRAWN
+  VOTING_STARTED
+  VOTING_ENDED
+}
+
+type ProposalOption {
+  id: Int
+  label: String
+  voteBalanceSum: Float # convenient for making a quick status summary
+  votes: [Vote]
+}
+
+type Vote {
+  address: Address
+  balance: Float
+}
+
+type Query {
+  # when blockNumber is specified, the votes and vote balances returned should
+  # match the state at that block. when it is not specified, it should default
+  # to the latest block
+
+  proposalCount(blockNumber: Int): Int
+
+  allProposals(
+    first: Int,
+    offset: Int,
+    blockNumber: Int
+  ): [Proposal]
+
+  proposal(id: String, blockNumber: Int): Proposal
+}
