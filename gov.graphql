@@ -16,7 +16,6 @@ enum ProposalStatus {
 
 type ProposalOption {
   id: Int
-  label: String
   voteBalanceSum: Float # convenient for making a quick status summary
   votes: [Vote]
 }
