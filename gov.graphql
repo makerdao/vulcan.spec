@@ -1,7 +1,6 @@
 type Proposal {
   id: String
-  title: String
-  ipfsHash: String
+  documentHash: String
   startTime: Int # i.e. a unix timestamp; some other time type is also ok
   endTime: Int
   status: ProposalStatus
@@ -30,7 +29,8 @@ type Vote {
 type Query {
   # when blockNumber is specified, the votes and vote balances returned should
   # match the state at that block. when it is not specified, it should default
-  # to the latest block
+  # to the block at which the proposal entered VOTING_ENDED or WITHDRAWN, or the
+  # latest block if neither of those states have been reached yet
 
   proposalCount(blockNumber: Int): Int
 
