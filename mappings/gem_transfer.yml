@@ -1,0 +1,37 @@
+--- # Mappings of Gem Transfer values from events
+- Vat.flux(bytes32 ilk, bytes32 src, bytes32 dst, int256 rad):
+    src:  flux.src
+    dst:  flux.dst
+    ilk:  flux.ilk
+    amt:  flux.rad
+    act:  'flux'
+    tx:   log.TxHash
+- Vat.grab(bytes32 i, bytes32 u, bytes32 v, bytes32 w, int dink, int dart):
+    src:  grab.u
+    dst:  grab.v
+    ilk:  grab.i
+    amt:  Ilks[grab.i] * grab.dink
+    act:  'grab'
+    tx:   log.TxHash
+- Vat.slip(bytes32 ilk, bytes32 guy, int256 rad):
+    src:  msg.sender (adapter)
+    dst:  slip.guy
+    ilk:  slip.ilk
+    amt:  slip.rad
+    act:  'slip'
+    tx:   log.TxHash
+- Vat.toll(bytes32 i, bytes32 u, int take):
+    src:  nil
+    dst:  toll.u
+    ilk:  toll.i
+    amt:  Ilks[toll.i] * toll.take
+    act:  'toll'
+    tx:   log.TxHash
+- Vat.tune(bytes32 i, bytes32 u, bytes32 v, bytes32 w, int dink, int dart):
+    src:  tune.v
+    dst:  tune.v
+    ilk:  tune.i
+    amt:  Ilks[tune.i] * tune.dink
+    act:  'tune'
+    tx:   log.TxHash
+...
