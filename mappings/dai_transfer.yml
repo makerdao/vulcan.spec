@@ -1,0 +1,26 @@
+--- # Mappings of Dai Transfer values from events
+- Drip.Drip:
+    src: Drip.ilk,
+    dst: nil,
+    amt: Drip.diff,
+    act: 'drip'
+    tx: log.TxHash
+- Vat.heal: {
+    src: nil,
+    dst: heal.v,
+    amt: heal.rad,
+    act: 'heal'
+    tx: log.TxHash
+- Vat.move:
+    src: move.src,
+    dst: move.dst,
+    amt: move.rad,
+    act: 'move'
+    tx: log.TxHash
+- Vat.tune:
+    src: nil,
+    dst: tune.u,
+    amt: tune.dart,
+    act: 'tune'
+    tx: log.TxHash
+...

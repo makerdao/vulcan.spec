@@ -12,7 +12,7 @@ enum DaiAct {
   MOVE
   TUNE
   HEAL
-  FOLD
+  DRIP
 }
 
 # Vat Gem movements
