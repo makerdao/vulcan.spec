@@ -1,0 +1,50 @@
+---
+- Cat.file(bytes32 what, address data):
+    ilkId:  nil
+    what:   file.what
+    addr:   file.address
+    val:    nil
+    tx:     log.TxHash
+- Cat.file(bytes32 ilk, bytes32 what, uint data):
+    ilkId:  file.ilk
+    what:   file.what
+    addr:   nil
+    val:    file.data
+    tx:     log.TxHash
+- Cat.file(bytes32 ilk, bytes32 what, address flip):
+    ilkId:  file.ilk
+    what:   file.what
+    addr:   nil
+    val:    file.flip
+    tx:     log.TxHash
+- Drip.file(bytes32 ilk, bytes32 what, uint data):
+    ilkId:  file.ilk
+    what:   file.what
+    addr:   nil
+    val:    file.data
+    tx:     log.TxHash
+- Drip.file(bytes32 what, uint data):
+    ilkId:  nil
+    what:   file.what
+    addr:   nil
+    val:    file.data
+    tx:     log.TxHash
+- Drip.file(bytes32 what, bytes32 data):
+    ilkId:  nil
+    what:   file.what
+    addr:   file.data
+    val:    nil
+    tx:     log.TxHash
+- Pit.file(bytes32 what, uint data):
+    ilkId:  nil
+    what:   file.what
+    addr:   nil
+    val:    file.data
+    tx:     log.TxHash
+- Pit.file(bytes32 ilk, bytes32 what, uint data):
+    ilkId:  file.ilk
+    what:   file.what
+    addr:   nil
+    val:    file.data
+    tx:     log.TxHash
+...
