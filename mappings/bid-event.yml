@@ -1,0 +1,100 @@
+- Flip.kick:
+    bidId: flip_kick.bid_id
+    act:   'KICK'
+    lot:   flip_kick.log
+    bid:   flip_kick.bid
+    guy:   null #msg.sender
+    tic:   null
+    end:   flip_kick.end
+    tx:    log.TxHash
+
+- Flip.tend:
+    bidId: tend.bid_id
+    act:   'TEND'
+    lot:   tend.log
+    bid:   tend.bid
+    guy:   tend.guy
+    tic:   tend.tic
+    end:   null
+    tx:    log.TxHash
+
+- Flip.dent:
+    bidId: dent.bid_id
+    act:   'DENT'
+    lot:   dent.lot
+    bid:   dent.bid
+    guy:   dent.guy
+    tic:   dent.tic
+    end:   null
+    tx:    log.TxHash
+
+
+- Flip.deal:
+    bidId: deal.bid_id
+    act:   'DEAL'
+    lot:   null
+    bid:   null
+    guy:   null #msg.sender
+    tic:   null
+    end:   null
+    tx:    log.TxHash
+
+- Flop.kick:
+    bidId: flop_kick.bid_id
+    act:   'KICK'
+    lot:   flop_kick.lot
+    bid:   flop_kick.bid
+    guy:   null #msg.sender
+    tic:   null
+    end:   flop_kick.end
+    tx:    log.TxHash
+
+- Flop.dent:
+    bidId: dent.bid_id
+    act:   'DENT'
+    lot:   dent.lot
+    bid:   dent.bid
+    guy:   dent.guy
+    tic:   dent.tic
+    end:   null
+    tx:    log.TxHash
+
+- Flop.deal:
+    bidId: deal.bid_id
+    act:   'DEAL'
+    lot:   null
+    bid:   null
+    guy:   null #msg.sender
+    tic:   null
+    end:   null
+    tx:    log.TxHash
+
+- Flap.kick:
+    bidId: flap_kick.bid_id
+    act:   'KICK'
+    lot:   flap_kick.lot
+    bid:   flap_kick.bid
+    guy:   null #msg.sender
+    tic:   null
+    end:   flap_kick.end
+    tx:    log.TxHash
+
+- Flap.tend:
+    bidId: tend.bid_id
+    act:   'TEND'
+    lot:   tend.lot
+    bid:   tend.bid
+    guy:   tend.guy
+    tic:   tend.tic
+    end:   null
+    tx:    log.TxHash
+
+- Flap.deal:
+    bidId: deal.bid_id
+    act:   'DEAL'
+    lot:   null
+    bid:   null
+    guy:   null #msg.sender
+    tic:   null
+    end:   null
+    tx:    log.TxHash

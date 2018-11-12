@@ -1,0 +1,41 @@
+- FlipBid:
+    id:      flip_kick.bid_id
+    guy:     tend[id].guy OR dent[id].guy
+    tic:     tend[id].tic OR dent[id].tic
+    end:     flip_kick.end
+    lot:     flip_kick.lot OR tend[id].lot OR dent[id].lot
+    bid:     flip_kick.bid OR tend[id].bid OR dent[id].bid
+    gal:     flip_kick.gal
+    urn:     flip_kick.urn
+    tab:     flip_kick.tab
+    dealt:   deal[bid_id] != null
+    market:  Market     # market detail
+    type:    'FLIP'
+
+- FlopBid:
+    id:      flop_kick.bid_id
+    guy:     dent[id].guy
+    tic:     dent[id].guy
+    end:     flop_kick.end
+    lot:     flop_kick.lot
+    bid:     flop_kick.bid
+    gal:     flop_kick.gal
+    urn:     null
+    tab:     null
+    dealt:   deal[id] != null
+    market:  Market     # market detail
+    type:    'FLOP'
+
+- FlapBid:
+    id:      flap_kick.bid_id
+    guy:     tend[id].guy
+    tic:     tend[id].tic
+    end:     flap_kick.end
+    lot:     flap_kick.lot
+    bid:     flap_kick.bid
+    gal:     flap_kick.gal
+    urn:     null
+    tab:     null
+    dealt:   deal[id] != null
+    market:  Market     # market detail
+    type:    'FLAP'
