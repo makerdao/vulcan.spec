@@ -1,0 +1,20 @@
+--- # Understanding this to be one view built up from all Cat.Bite and Vow.flog events
+- Sin:
+    era:      'SELECT era
+               FROM maker.vow_flog
+               ORDER BY
+                 block_number DESC,
+                 tx_idx DESC,
+                 log_idx DESC
+               LIMIT 1;'
+    tab:      'SELECT tab
+               FROM maker.bite
+               ORDER BY
+                 block_number DESC,
+                 tx_idx DESC,
+                 log_idx DESC
+               LIMIT 1;'
+    bites:    'SELECT * FROM maker.bite;'
+    flog:     'SELECT * FROM maker.vow_flow WHERE era = Bite.era;'
+    flogged:  'SELECT count(*) FROM maker.vow_flow;` > 0
+...
