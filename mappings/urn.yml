@@ -1,0 +1,15 @@
+- Frob->Urn:
+    ilkid: frob.ilk
+    urn: frob.urn,
+    ink: frob.ink
+    art: frob.art
+    rat: frob.ink * Ilk.spot / frob.art * Ilk.rate
+    safe: rat > 1
+
+- Bite->Urn:
+    ilkid: bite.ilk
+    urn: bite.urn,
+    ink: 0
+    art: 0
+    rat: 0
+    safe: false
