@@ -1,0 +1,16 @@
+--- # Mappings of Ilk
+
+id: distinct vat_init.ilk
+take: latest vat_toll.take
+rate: latest vat_fold.rate
+spot: latest pit_file.data where what == 'spot'
+line: latest pit_file.data where what == 'line'
+chop: latest cat_file.data where what == 'chop'
+lump: latest cat_file.data where what == 'lump'
+flip: latest cat_file.flip where what == 'flip'
+rho: header.block_timestamp of latest drip_drip
+tax: latest drip_file.tax
+Ink: TBD
+Art: TBD
+
+
