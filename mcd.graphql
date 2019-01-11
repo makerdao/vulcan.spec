@@ -38,26 +38,23 @@ type Urn {
   safe:   Boolean # ratio > 1
   frobs:  [FrobEvent]  # state change events
   bites:  [BiteEvent]  # liquidation events
-  flips:  [Flip]  # liquidated collateral awaiting auction
   created: Datetime
   updated: Datetime
 }
 
-type Flip {
-
-  # Persisted flips mapping
-  # Flip state updated via `bite` and `flip` actions.
-
-  id:      Integer  # flip id
+type BiteEvent {
+  id:      Integer  # bite/flip identifier
   ilkId:   String   # ilk identifier
   ilk:     Ilk      # ilk object
-  urn:     String   # urn identifier
+  urnId:   String   # urn identifier
+  urn:     Urn      # urn object
   ink:     Float    # siezed collateral
+  flipInk: Float    # remaining collateral to auction
   art:     Float    # siezed debt
+  flipArt: Float    # remaining debt to auction
   tab:     Float    # debt to recover including liq. penalty
   bids:    [Bid]    # auctioned collateral
-  created: Datetime
-  updated: Datetime
+  tx:      Tx       # transaction meta
 }
 
 type Sin {
@@ -90,16 +87,6 @@ type FrobEvent {
   dink:  Float    # ink delta
   dart:  Float    # art delta
   tx:    Tx       # transaction meta
-}
-
-# State change Event
-type BiteEvent {
-  ilkId:  String   # ilk identifier
-  urn:    String   # urn identifier
-  tab:    Float    # debt amount
-  flipId: Integer  # flip identifier
-  flip:   Flip     # flip object
-  tx:     Tx       # transaction meta
 }
 
 # State change Event
