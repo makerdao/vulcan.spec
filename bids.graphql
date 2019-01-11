@@ -18,6 +18,8 @@ type Bid {
   market:  Market     # market detail
   type:    BidType    # auction type - flip | flap | flop
   events:  [BidEvent] # bid state change events
+  created: Datetime
+  updated: Datetime
 }
 
 # Auction types

@@ -16,9 +16,11 @@ type Ilk {
   tax:   Float   # tax
   Ink:   Float   # total encumbered Gem
   Art:   Float   # total debt outstanding
-  files: [File]  # risk param state change events
-  bites: [Bite]  # ilk bite events
-  frobs: [Frob]  # ilk frob events
+  files: [FileEvent]  # risk param state change events
+  bites: [BiteEvent]  # ilk bite events
+  frobs: [FrobEvent]  # ilk frob events
+  created: Datetime
+  updated: Datetime
 
 }
 
@@ -34,9 +36,11 @@ type Urn {
   art:    Float   # outstanding debt
   rat:    Float   # (ink * ilk.spot) / (art * ilk.rate)
   safe:   Boolean # ratio > 1
-  frobs:  [Frob]  # state change events
-  bites:  [Bite]  # liquidation events
+  frobs:  [FrobEvent]  # state change events
+  bites:  [BiteEvent]  # liquidation events
   flips:  [Flip]  # liquidated collateral awaiting auction
+  created: Datetime
+  updated: Datetime
 }
 
 type Flip {
@@ -52,6 +56,8 @@ type Flip {
   art:     Float    # siezed debt
   tab:     Float    # debt to recover including liq. penalty
   bids:    [Bid]    # auctioned collateral
+  created: Datetime
+  updated: Datetime
 }
 
 type Sin {
@@ -61,13 +67,15 @@ type Sin {
 
   era:     Era      # bite timestamp
   tab:     Float    # sin amount
-  bites:   [Bite]   # bite events
+  bites:   [BiteEvent] # bite events
   flog:    Flog     # flog event
   flogged: Boolean  # true if flogged
+  created: Datetime
+  updated: Datetime
 }
 
 # State change Event
-type File {
+type FileEvent {
   ilkId: String   # ilk identifier
   what:  String   # field to update
   addr:  Address  # present when data is address
@@ -76,7 +84,7 @@ type File {
 }
 
 # State change Event
-type Frob {
+type FrobEvent {
   ilkId: String   # ilk identifier
   urn:   String   # urn identifier
   dink:  Float    # ink delta
@@ -85,7 +93,7 @@ type Frob {
 }
 
 # State change Event
-type Bite {
+type BiteEvent {
   ilkId:  String   # ilk identifier
   urn:    String   # urn identifier
   tab:    Float    # debt amount
@@ -95,7 +103,7 @@ type Bite {
 }
 
 # State change Event
-type Flog {
+type FlogEvent {
   tx:     Tx       # transaction meta
 }
 
@@ -171,7 +179,7 @@ type Query {
      orderBy:   FileOrderBy,
      condition: FileCondition,
      filter:    FileFilter
-   ): [File]
+   ): [FileEvent]
 
    allFrobs(
      first:     Int,
@@ -182,7 +190,7 @@ type Query {
      orderBy:   FrobOrderBy,
      condition: FrobCondition,
      filter:    FrobFilter
-   ): [Frob]
+   ): [FrobEvent]
 
    allBites(
      first:     Int,
@@ -193,5 +201,5 @@ type Query {
      orderBy:   BiteOrderBy,
      condition: BiteCondition,
      filter:    BiteFilter
-   ): [Bite]
+   ): [BiteEvent]
 }
