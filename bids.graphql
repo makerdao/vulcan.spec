@@ -12,7 +12,7 @@ type Bid {
   lot:     Float      # lot amount
   bid:     Float      # bid amount
   gal:     Address    # receives auction proceeds
-  urn:     Address    # urn owner (flip only)
+  urn:     String     # urn identifier (flip only)
   tab:     Address    # amount to raise - (tend/dent phase switch) (flip only)
   dealt:   Boolean    # true if auction has been settled
   market:  Market     # market detail

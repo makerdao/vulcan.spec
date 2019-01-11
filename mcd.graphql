@@ -29,7 +29,7 @@ type Urn {
 
   ilkId:  String  # unique identifier e.g. ETH
   ilk:    Ilk     # ilk object
-  lad:    Address # urn owner public key
+  urn:    String  # urn identifier
   ink:    Float   # locked gem
   art:    Float   # outstanding debt
   rat:    Float   # (ink * ilk.spot) / (art * ilk.rate)
@@ -78,7 +78,7 @@ type File {
 # State change Event
 type Frob {
   ilkId: String   # ilk identifier
-  lad:   String   # urn owner
+  urn:   String   # urn identifier
   dink:  Float    # ink delta
   dart:  Float    # art delta
   tx:    Tx       # transaction meta
@@ -87,7 +87,7 @@ type Frob {
 # State change Event
 type Bite {
   ilkId:  String   # ilk identifier
-  lad:    String   # urn owner
+  urn:    String   # urn identifier
   tab:    Float    # debt amount
   flipId: Integer  # flip identifier
   flip:   Flip     # flip object
@@ -152,7 +152,7 @@ type Query {
 
    getUrn(
      ilkId: String!
-     lad: String!
+     urnId: String!
      blockNumber: Int # optionally retrieve ilk state at a given block height
    ): Urn
 
