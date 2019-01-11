@@ -36,7 +36,7 @@ type Urn {
   safe:   Boolean # ratio > 1
   frobs:  [Frob]  # state change events
   bites:  [Bite]  # liquidation events
-
+  flips:  [Flip]  # liquidated collateral awaiting auction
 }
 
 type Flip {
@@ -46,14 +46,12 @@ type Flip {
 
   id:      Integer  # flip id
   ilkId:   String   # ilk identifier
-  urn:     Address  # urn owner (Urn.lad)
-  ink:     Float    # siezed ink
-  art:     Float    # siezed collateral
-  tab:     Float    # gem amount to recover
-  flipped: Integer  # true if gem has gone to auction
-  bidId:   Integer  # Bid identifier if flipped
-  bid:     Bid      # Bid object
-
+  ilk:     Ilk      # ilk object
+  urn:     String   # urn identifier
+  ink:     Float    # siezed collateral
+  art:     Float    # siezed debt
+  tab:     Float    # debt to recover including liq. penalty
+  bids:    [Bid]    # auctioned collateral
 }
 
 type Sin {
@@ -92,6 +90,7 @@ type Bite {
   lad:    String   # urn owner
   tab:    Float    # debt amount
   flipId: Integer  # flip identifier
+  flip:   Flip     # flip object
   tx:     Tx       # transaction meta
 }
 
