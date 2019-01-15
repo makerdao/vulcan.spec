@@ -43,18 +43,30 @@ type Urn {
 }
 
 type BiteEvent {
-  id:      Integer  # bite/flip identifier
+  id:      Integer  # flip identifier
   ilkId:   String   # ilk identifier
   ilk:     Ilk      # ilk object
   urnId:   String   # urn identifier
   urn:     Urn      # urn object
   ink:     Float    # siezed collateral
-  flipInk: Float    # remaining collateral to auction
   art:     Float    # siezed debt
-  flipArt: Float    # remaining debt to auction
   tab:     Float    # debt to recover including liq. penalty
   bids:    [Bid]    # auctioned collateral
+  flip:    Flip     # flip state
   tx:      Tx       # transaction meta
+}
+
+type FlipEvent {
+  id:      Integer  # flip identifier
+  wad:     Float    # flip amount
+  tx:      Tx       # transaction meta
+}
+
+type Flip {
+  id:   Integer  # flip identifier
+  ink:  Float    # remaining collateral to auction
+  art:  Float    # remaining debt to auction
+  tab:  Float    # debt to recover including liq. penalty
 }
 
 type Sin {
