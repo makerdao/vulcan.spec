@@ -42,31 +42,41 @@ type Urn {
   updated: Datetime
 }
 
+# Cat.bite.call
+# -> create Flip id: e.nflip
+# -> create BiteEvent id: e.nflip
 type BiteEvent {
-  id:      Integer  # flip identifier
-  ilkId:   String   # ilk identifier
-  ilk:     Ilk      # ilk object
-  urnId:   String   # urn identifier
-  urn:     Urn      # urn object
-  ink:     Float    # siezed collateral
-  art:     Float    # siezed debt
-  tab:     Float    # debt to recover including liq. penalty
-  bids:    [Bid]    # auctioned collateral
-  flip:    Flip     # flip state
-  tx:      Tx       # transaction meta
+  id:      Integer  # storage: flips[nflip]                 desc: flip identifier
+  ilkId:   String   # param:   e.ilk                        desc: ilk identifier
+  ilk:     Ilk      # obj:     Ilk(id: ilkId)               desc: ilk object
+  urnId:   String   # param:   e.urn                        desc: urn identifier
+  urn:     Urn      # obj:     Urn(id: urnId, ilkid: IlkId) desc: urn object
+  ink:     Float    # storage: ilks[ilk].ink                desc: siezed collateral
+  art:     Float    # storage: ilks[ilk].art                desc: siezed debt
+  tab:     Float    # param:   e.tab                        desc: debt to recover including liq. penalty
+  bids:    [Bid]    # obj:     Bid(flipId: id)              desc: collateral auction(s)
+  flip:    Flip     # obj:     Flip(id: id)                 desc: flip state
+  tx:      Tx       #                                       desc: transaction meta
 }
 
+# Cat.flip.call
+# -> create FlipEvent id: e.n
+# -> update Flip id: e.n
+# -> create Bid id: e.id
 type FlipEvent {
-  id:      Integer  # flip identifier
-  wad:     Float    # flip amount
-  tx:      Tx       # transaction meta
+  id:      Integer  # param: e.n             desc: flip identifier
+  wad:     Float    # param: e.wad           desc: flip amount
+  tx:      Tx       #                        desc: transaction meta
 }
 
+# Cat.bite.call -> create Flip id:nflip
+# Cat.flip.call -> update Flip id:n
 type Flip {
-  id:   Integer  # flip identifier
-  ink:  Float    # remaining collateral to auction
-  art:  Float    # remaining debt to auction
-  tab:  Float    # debt to recover including liq. penalty
+  id:      Integer  # param n | nflip           desc: flip identifier
+  ink:     Float    # storage: flips[n].ink     desc: remaining collateral to auction
+  tab:     Float    # storage: flips[n].tab     desc: remaining debt to recover
+  created: Datetime
+  updated: Datetime
 }
 
 type Sin {
