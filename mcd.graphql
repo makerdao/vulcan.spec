@@ -2,20 +2,17 @@
 # -> create Ilk id: e.ilk
 # Cat.file.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].chop ilks[e.ilk].lump ilks[e.ilk].flip
-# -> create FileEvent id: e.ilk
-# Frob.file(ilk _).call
+# Pit.file(ilk _).call
 # -> update Ilk id: e.ilk => ilks[e.ilk].spot ilks[e.ilk].line
-# -> create FileEvent id: e.ilk
 # Drip.file(ilk _).call
 # -> update Ilk id: e.ilk => ilks[e.ilk].tax ilks[e.ilk].rho
-# -> create FileEvent id: e.ilk
 # Vat.fold.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].rate
 # Vat.toll.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].take
-# Vat.frob.call
-# -> update Ilk id: e.ilk => ilks[e.ilk].Ink ilks[e.ilk].Art
 # Vat.tune.call
+# -> update Ilk id: e.ilk => ilks[e.ilk].Ink ilks[e.ilk].Art
+# Vat.grab.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].Ink ilks[e.ilk].Art
 type Ilk {
   id:    String      # param: e.ilk                  desc: ilk identifier e.g ETH
@@ -37,43 +34,17 @@ type Ilk {
   updated: Datetime
 }
 
-# Pit.file(what _).call
-# -> update PitGov id: e.address => Pit.Line
-# -> create FileEvent id: e.address
-type PitGov {
-  id:      String       # param: e.address           desc: contract address
-  Line:    Float        # storage: Line              desc: system debt ceiling
-  files:   [FileEvent]  # obj: FileEvent(id: id)     desc: state change events
-  created: Datetime
-  updated: Datetime
-}
-
-# Drip.file(what _).call
-# -> update DripGov id: e.address => Drip.repo Drip.vow
-# -> create FileEvent id: e.address
-type DripGov {
-  id:      String       # param: e.address           desc: contract address
-  repo:    Float        # storage: repo              desc: debt scaling factor
-  tax:     Float        # storage: tax               desc: debt scaling factor
-  files:   [FileEvent]  # obj: FileEvent(id: id)     desc: state change events
-  created: Datetime
-  updated: Datetime
-}
-
+# Vat.tune.call -> update Urn id: e.u ilkId: e.i
 type Urn {
-
-  # Persisted urns mapping
-  # Urn state updated via `frob` and `bite` actions.
-
-  ilkId:  String  # unique identifier e.g. ETH
-  ilk:    Ilk     # ilk object
-  urn:    String  # urn identifier
-  ink:    Float   # locked gem
-  art:    Float   # outstanding debt
-  rat:    Float   # (ink * ilk.spot) / (art * ilk.rate)
-  safe:   Boolean # ratio > 1
-  frobs:  [FrobEvent]  # state change events
-  bites:  [BiteEvent]  # liquidation events
+  id:      String       # param:   e.urn                          desc: urn identifier
+  ilkId:   String       # param:   e.ilk                          desc: ilk identifier
+  ilk:     Ilk          # obj:     Ilk(id: ilkId)                 desc: ilk object
+  ink:     Float        # storage: urns[ilk][urn].ink             desc: locked gem
+  art:     Float        # storage: urns[ilk][urn].art             desc: outstanding debt
+  ratio:   Float        # >: (ink * ilk.spot) / (art * ilk.rate)  desc: collateralization ratio
+  safe:    Boolean      # >: ratio > 1                            desc: true if sufficiently collateralized
+  frobs:   [FrobEvent]  # obj: FrobEvent(ilkId: ilkId urnId: id)  desc: state change events
+  bites:   [BiteEvent]  # obj: BiteEvent(ilkId: ilkId urnId: id)  desc: liquidation events
   created: Datetime
   updated: Datetime
 }
@@ -115,6 +86,48 @@ type Flip {
   updated: Datetime
 }
 
+# Pit.file(what _).call -> update PitGov id: e.address
+type PitGov {
+  id:      String       # param:   e.address          desc: contract address
+  Line:    Float        # storage: Pit.Line           desc: system debt ceiling
+  files:   [FileEvent]  # obj:     FileEvent(id: id)  desc: state change events
+  created: Datetime
+  updated: Datetime
+}
+
+# Cat.file(what _).call -> update CatGov id: e.address
+type CatGov {
+  id:      String       # param:   e.address          desc: contract address
+  pit:     Address      # storage: Cat.pit            desc: pit address
+  vow:     Address      # storage: Cat.vow            desc: vow address
+  files:   [FileEvent]  # obj:     FileEvent(id: id)  desc: state change events
+  created: Datetime
+  updated: Datetime
+}
+
+# Drip.file(what _).call -> update DripGov id: e.address
+type DripGov {
+  id:      String       # param: e.address           desc: contract address
+  repo:    Float        # storage: Drip.repo         desc: debt scaling factor
+  tax:     Float        # storage: Drip.tax          desc: debt scaling factor
+  files:   [FileEvent]  # obj: FileEvent(id: id)     desc: state change events
+  created: Datetime
+  updated: Datetime
+}
+
+# Pit.file(ilk _).call   -> create FileEvent id: e.ilk
+# Pit.file(what _).call  -> create FileEvent id: e.address
+# Cat.file(ilk _).call   -> create FileEvent id: e.ilk
+# Cat.file(what _).call  -> create FileEvent id: e.address
+# Drip.file(ilk _).call  -> create FileEvent id: e.ilk
+# Drip.file(what _).call -> create FileEvent id: e.address
+type FileEvent {
+  id:    String   # param: e.ilk || e.address desc: ilk identifier or contract address
+  what:  String   # param: e.what             desc: field to update
+  data:  String   # param: e.data             desc: parsed data - number or address
+  tx:    Tx       #                           desc: transaction meta
+}
+
 type Sin {
 
   # Persisted sin queue mapping
@@ -129,22 +142,16 @@ type Sin {
   updated: Datetime
 }
 
-# Governance state change Event
-# file.call -> create FileEvent
-type FileEvent {
-  id:    String   # param: e.ilk || e.address desc: ilk identifier or contract address
-  what:  String   # param: e.what             desc: field to update
-  data:  String   # param: e.data             desc: parsed data - number or address
-  tx:    Tx       #                           desc: transaction meta
-}
-
-# State change Event
+# Pit.frob.call
+# -> create FrobEvent ilkId: e.ilk => e.dink e.dart
 type FrobEvent {
-  ilkId: String   # ilk identifier
-  urn:   String   # urn identifier
-  dink:  Float    # ink delta
-  dart:  Float    # art delta
-  tx:    Tx       # transaction meta
+  ilkId: String   # param:   e.ilk                        desc: ilk identifier
+  ilk:   Ilk      # obj:     Ilk(id: ilkId, ilkId: ilkId) desc: ilk object
+  urnId: String   # param:   e.urn                        desc: urn identifier
+  urn:   Urn      # obj:     Urn(id: urnId, ilkId: ilkId) desc: urn object
+  dink:  Float    # param:   e.dink                       desc: ink delta
+  dart:  Float    # param    e.dart                       desc: art delta
+  tx:    Tx       #                                       desc: transaction meta
 }
 
 # State change Event
