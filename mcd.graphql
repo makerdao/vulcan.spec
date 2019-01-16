@@ -1,3 +1,9 @@
+# TODO
+# support object retrieval at a given block height
+# polymorphic event types?
+# type VowGov {}
+
+
 # Vat.init.call
 # -> create Ilk id: e.ilk
 # Cat.file.call
@@ -49,39 +55,23 @@ type Urn {
   updated: Datetime
 }
 
-# Cat.bite.call
-# -> create Flip id: e.nflip
-# -> create BiteEvent id: e.nflip
-type BiteEvent {
-  id:      Integer  # storage: flips[nflip]                 desc: flip identifier
-  ilkId:   String   # param:   e.ilk                        desc: ilk identifier
-  ilk:     Ilk      # obj:     Ilk(id: ilkId)               desc: ilk object
-  urnId:   String   # param:   e.urn                        desc: urn identifier
-  urn:     Urn      # obj:     Urn(id: urnId, ilkId: IlkId) desc: urn object
-  ink:     Float    # storage: ilks[e.ilk].ink              desc: siezed collateral
-  art:     Float    # storage: ilks[e.ilk].art              desc: siezed debt
-  tab:     Float    # param:   e.tab                        desc: debt to recover including liq. penalty
-  bids:    [Bid]    # obj:     Bid(flipId: id)              desc: collateral auction(s)
-  flip:    Flip     # obj:     Flip(id: id)                 desc: flip state
-  tx:      Tx       #                                       desc: transaction meta
-}
-
-# Cat.flip.call
-# -> create FlipEvent id: e.n
-# -> update Flip id: e.n
-# -> create Bid id: e.id
-type FlipEvent {
-  id:      Integer  # param: e.n             desc: flip identifier
-  wad:     Float    # param: e.wad           desc: flip amount
-  tx:      Tx       #                        desc: transaction meta
-}
-
 # Cat.bite.call -> create Flip id:nflip
 # Cat.flip.call -> update Flip id:n
 type Flip {
   id:      Integer  # param n | nflip           desc: flip identifier
   ink:     Float    # storage: flips[n].ink     desc: remaining collateral to auction
   tab:     Float    # storage: flips[n].tab     desc: remaining debt to recover
+  created: Datetime
+  updated: Datetime
+}
+
+# Vow.fess.call -> create Sin era: now
+# Vow.flog.call -> update Sin era: e.era => flogged
+type Sin {
+  era:     Integer     # param: e.era             desc: bite timestamp
+  tab:     Float       # sin[era]                 desc: sin amount
+  events:  SinEvent    # obj: SinEvent(era: era)  desc: fess & flog events
+  flogged: Boolean     #                          desc: true if flogged
   created: Datetime
   updated: Datetime
 }
@@ -115,6 +105,41 @@ type DripGov {
   updated: Datetime
 }
 
+# Pit.frob.call -> create FrobEvent ilkId: e.ilk => e.dink e.dart
+type FrobEvent {
+  ilkId: String   # param:   e.ilk                        desc: ilk identifier
+  ilk:   Ilk      # obj:     Ilk(id: ilkId, ilkId: ilkId) desc: ilk object
+  urnId: String   # param:   e.urn                        desc: urn identifier
+  urn:   Urn      # obj:     Urn(id: urnId, ilkId: ilkId) desc: urn object
+  dink:  Float    # param:   e.dink                       desc: ink delta
+  dart:  Float    # param    e.dart                       desc: art delta
+  tx:    Tx       #                                       desc: transaction meta
+}
+
+# Cat.bite.call -> create BiteEvent id: e.flip
+type BiteEvent {
+  id:      Integer  # param:   e.flip                       desc: flip identifier
+  ilkId:   String   # storage: flips[id].ilk                desc: ilk identifier
+  ilk:     Ilk      # obj:     Ilk(id: ilkId)               desc: ilk object
+  urnId:   String   # storage: flips[id].urn                desc: urn identifier
+  urn:     Urn      # obj:     Urn(id: urnId, ilkId: IlkId) desc: urn object
+  ink:     Float    # storage: ilks[id].ink                 desc: siezed collateral
+  tab:     Float    # storage: ilks[id].tab                 desc: debt to recover including liq. penalty
+  art:     Float    # param:   e.art                        desc: siezed debt
+  bids:    [Bid]    # obj:     Bid(flipId: id)              desc: collateral auction(s)
+  flip:    Flip     # obj:     Flip(id: id)                 desc: flip state
+  tx:      Tx       #                                       desc: transaction meta
+}
+
+# Cat.flip.call
+# -> create FlipEvent id: e.n
+# -> create Bid id: e.id
+type FlipEvent {
+  id:      Integer  # param: e.n             desc: flip identifier
+  wad:     Float    # param: e.wad           desc: flip amount
+  tx:      Tx       #                        desc: transaction meta
+}
+
 # Pit.file(ilk _).call   -> create FileEvent id: e.ilk
 # Pit.file(what _).call  -> create FileEvent id: e.address
 # Cat.file(ilk _).call   -> create FileEvent id: e.ilk
@@ -128,35 +153,11 @@ type FileEvent {
   tx:    Tx       #                           desc: transaction meta
 }
 
-type Sin {
-
-  # Persisted sin queue mapping
-  # Sin state updated via `Cat.bite` and `Vow.flog` actions.
-
-  era:     Era      # bite timestamp
-  tab:     Float    # sin amount
-  bites:   [BiteEvent] # bite events
-  flog:    Flog     # flog event
-  flogged: Boolean  # true if flogged
-  created: Datetime
-  updated: Datetime
-}
-
-# Pit.frob.call
-# -> create FrobEvent ilkId: e.ilk => e.dink e.dart
-type FrobEvent {
-  ilkId: String   # param:   e.ilk                        desc: ilk identifier
-  ilk:   Ilk      # obj:     Ilk(id: ilkId, ilkId: ilkId) desc: ilk object
-  urnId: String   # param:   e.urn                        desc: urn identifier
-  urn:   Urn      # obj:     Urn(id: urnId, ilkId: ilkId) desc: urn object
-  dink:  Float    # param:   e.dink                       desc: ink delta
-  dart:  Float    # param    e.dart                       desc: art delta
-  tx:    Tx       #                                       desc: transaction meta
-}
-
-# State change Event
-type FlogEvent {
-  tx:     Tx       # transaction meta
+# Vow.fess.call -> create SinEvent era: now
+# Vow.flog.call -> create SinEvent era: e.era
+type SinEvent {
+  era:    Integer  # param: e.era desc: flogs storage key
+  tx:     Tx       #              desc: transaction meta
 }
 
 type Query {
