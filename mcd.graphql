@@ -21,46 +21,46 @@
 # Vat.grab.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].Ink ilks[e.ilk].Art
 type Ilk {
-  id:    String      # param: e.ilk                  desc: ilk identifier e.g ETH
-  take:  Float       # storage: Vat.ilks[id].take    desc: rate scaling factor
-  rate:  Float       # storage: Vat.ilks[id].rate    desc: debt scaling factor
-  spot:  Float       # storage: Pit.ilks[id].spot    desc: price feed with margin
-  line:  Float       # storage: Pit.ilks[id].line    desc: debt ceiling
-  chop:  Float       # storage: Cat.ilks[id].chop    desc: liquidation penalty
-  lump:  Float       # storage: Cat.ilks[id].lump    desc: flip auction lot size
-  flip:  Address     # storage: Cat.ilks[id].flip    desc: flipper contract
-  rho:   Era         # storage: Drip.ilks[id].tax    desc: time of last drip
-  tax:   Float       # storage: Drip.ilks[id].rho    desc: tax
-  Ink:   Float       # storage: Vat.ilks[id].Ink     desc: total encumbered Gem
-  Art:   Float       # storage: Vat.ilks[id].Art     desc: total debt outstanding
-  files: [FileEvent] # obj: FileEvent(id: id)        desc: risk param state change events
-  bites: [BiteEvent] # obj: BiteEvent(ilkId: id)     desc: ilk bite events
-  frobs: [FrobEvent] # obj: FrobEvent(ilkId: Id)     desc: ilk frob events
+  id:    String      # param: e.ilk                 desc: ilk identifier e.g ETH
+  take:  Float       # store: Vat.ilks[id].take     desc: rate scaling factor
+  rate:  Float       # store: Vat.ilks[id].rate     desc: debt scaling factor
+  spot:  Float       # store: Pit.ilks[id].spot     desc: price feed with margin
+  line:  Float       # store: Pit.ilks[id].line     desc: debt ceiling
+  chop:  Float       # store: Cat.ilks[id].chop     desc: liquidation penalty
+  lump:  Float       # store: Cat.ilks[id].lump     desc: flip auction lot size
+  flip:  Address     # store: Cat.ilks[id].flip     desc: flipper contract
+  rho:   Era         # store: Drip.ilks[id].tax     desc: time of last drip
+  tax:   Float       # store: Drip.ilks[id].rho     desc: tax
+  Ink:   Float       # store: Vat.ilks[id].Ink      desc: total encumbered Gem
+  Art:   Float       # store: Vat.ilks[id].Art      desc: total debt outstanding
+  files: [FileEvent] # query: FileEvent(id: id)     desc: risk param state change events
+  bites: [BiteEvent] # query: BiteEvent(ilkId: id)  desc: ilk bite events
+  frobs: [FrobEvent] # query: FrobEvent(ilkId: Id)  desc: ilk frob events
   created: Datetime
   updated: Datetime
 }
 
 # Vat.tune.call -> update Urn id: e.u ilkId: e.i
 type Urn {
-  id:      String       # param:   e.urn                          desc: urn identifier
-  ilkId:   String       # param:   e.ilk                          desc: ilk identifier
-  ilk:     Ilk          # obj:     Ilk(id: ilkId)                 desc: ilk object
-  ink:     Float        # storage: urns[ilk][urn].ink             desc: locked gem
-  art:     Float        # storage: urns[ilk][urn].art             desc: outstanding debt
-  ratio:   Float        # >: (ink * ilk.spot) / (art * ilk.rate)  desc: collateralization ratio
-  safe:    Boolean      # >: ratio > 1                            desc: true if sufficiently collateralized
-  frobs:   [FrobEvent]  # obj: FrobEvent(ilkId: ilkId urnId: id)  desc: state change events
-  bites:   [BiteEvent]  # obj: BiteEvent(ilkId: ilkId urnId: id)  desc: liquidation events
+  id:      String       # param: e.urn                                desc: urn identifier
+  ilkId:   String       # param: e.ilk                                desc: ilk identifier
+  ilk:     Ilk          # query: Ilk(id: ilkId)                       desc: ilk object
+  ink:     Float        # store: urns[iLk][urn].ink                   desc: locked gem
+  art:     Float        # store: urns[ilk][urn].art                   desc: outstanding debt
+  ratio:   Float        # query: (ink * ilk.spot) / (art * ilk.rate)  desc: collateralization ratio
+  safe:    Boolean      # query: ratio > 1                            desc: true if sufficiently collateralized
+  frobs:   [FrobEvent]  # query: FrobEvent(ilkId: ilkId urnId: id)    desc: state change events
+  bites:   [BiteEvent]  # query: BiteEvent(ilkId: ilkId urnId: id)    desc: liquidation events
   created: Datetime
   updated: Datetime
 }
 
-# Cat.bite.call -> create Flip id:nflip
-# Cat.flip.call -> update Flip id:n
+# Cat.bite.call -> create Flip id: e.nflip
+# Cat.flip.call -> update Flip id: e.n
 type Flip {
-  id:      Integer  # param n | nflip           desc: flip identifier
-  ink:     Float    # storage: flips[n].ink     desc: remaining collateral to auction
-  tab:     Float    # storage: flips[n].tab     desc: remaining debt to recover
+  id:      Integer  # param: e.n || e.nflip   desc: flip identifier
+  ink:     Float    # store: flips[n].ink     desc: remaining collateral to auction
+  tab:     Float    # store: flips[n].tab     desc: remaining debt to recover
   created: Datetime
   updated: Datetime
 }
@@ -68,29 +68,29 @@ type Flip {
 # Vow.fess.call -> create Sin era: now
 # Vow.flog.call -> update Sin era: e.era => flogged
 type Sin {
-  era:     Integer     # param: e.era             desc: bite timestamp
-  tab:     Float       # sin[era]                 desc: sin amount
-  events:  SinEvent    # obj: SinEvent(era: era)  desc: fess & flog events
-  flogged: Boolean     #                          desc: true if flogged
+  era:     Integer     # param: e.era               desc: bite timestamp
+  tab:     Float       # store: sin[era]            desc: sin amount
+  events:  SinEvent    # query: SinEvent(era: era)  desc: fess & flog events
+  flogged: Boolean     #                            desc: true if flogged
   created: Datetime
   updated: Datetime
 }
 
 # Pit.file(what _).call -> update PitGov id: e.address
 type PitGov {
-  id:      String       # param:   e.address          desc: contract address
-  Line:    Float        # storage: Pit.Line           desc: system debt ceiling
-  files:   [FileEvent]  # obj:     FileEvent(id: id)  desc: state change events
+  id:      String       # param: e.address          desc: contract address
+  Line:    Float        # store: Pit.Line           desc: system debt ceiling
+  files:   [FileEvent]  # query: FileEvent(id: id)  desc: state change events
   created: Datetime
   updated: Datetime
 }
 
 # Cat.file(what _).call -> update CatGov id: e.address
 type CatGov {
-  id:      String       # param:   e.address          desc: contract address
-  pit:     Address      # storage: Cat.pit            desc: pit address
-  vow:     Address      # storage: Cat.vow            desc: vow address
-  files:   [FileEvent]  # obj:     FileEvent(id: id)  desc: state change events
+  id:      String       # param: e.address          desc: contract address
+  pit:     Address      # store: Cat.pit            desc: pit address
+  vow:     Address      # store: Cat.vow            desc: vow address
+  files:   [FileEvent]  # query: FileEvent(id: id)  desc: state change events
   created: Datetime
   updated: Datetime
 }
@@ -98,9 +98,9 @@ type CatGov {
 # Drip.file(what _).call -> update DripGov id: e.address
 type DripGov {
   id:      String       # param: e.address           desc: contract address
-  repo:    Float        # storage: Drip.repo         desc: debt scaling factor
-  tax:     Float        # storage: Drip.tax          desc: debt scaling factor
-  files:   [FileEvent]  # obj: FileEvent(id: id)     desc: state change events
+  repo:    Float        # store: Drip.repo           desc: debt scaling factor
+  tax:     Float        # store: Drip.tax            desc: debt scaling factor
+  files:   [FileEvent]  # query: FileEvent(id: id)   desc: state change events
   created: Datetime
   updated: Datetime
 }
@@ -108,9 +108,9 @@ type DripGov {
 # Pit.frob.call -> create FrobEvent ilkId: e.ilk => e.dink e.dart
 type FrobEvent {
   ilkId: String   # param:   e.ilk                        desc: ilk identifier
-  ilk:   Ilk      # obj:     Ilk(id: ilkId, ilkId: ilkId) desc: ilk object
+  ilk:   Ilk      # query:   Ilk(id: ilkId, ilkId: ilkId) desc: ilk object
   urnId: String   # param:   e.urn                        desc: urn identifier
-  urn:   Urn      # obj:     Urn(id: urnId, ilkId: ilkId) desc: urn object
+  urn:   Urn      # query:   Urn(id: urnId, ilkId: ilkId) desc: urn object
   dink:  Float    # param:   e.dink                       desc: ink delta
   dart:  Float    # param    e.dart                       desc: art delta
   tx:    Tx       #                                       desc: transaction meta
@@ -118,26 +118,26 @@ type FrobEvent {
 
 # Cat.bite.call -> create BiteEvent id: e.flip
 type BiteEvent {
-  id:      Integer  # param:   e.flip                       desc: flip identifier
-  ilkId:   String   # storage: flips[id].ilk                desc: ilk identifier
-  ilk:     Ilk      # obj:     Ilk(id: ilkId)               desc: ilk object
-  urnId:   String   # storage: flips[id].urn                desc: urn identifier
-  urn:     Urn      # obj:     Urn(id: urnId, ilkId: IlkId) desc: urn object
-  ink:     Float    # storage: ilks[id].ink                 desc: siezed collateral
-  tab:     Float    # storage: ilks[id].tab                 desc: debt to recover including liq. penalty
-  art:     Float    # param:   e.art                        desc: siezed debt
-  bids:    [Bid]    # obj:     Bid(flipId: id)              desc: collateral auction(s)
-  flip:    Flip     # obj:     Flip(id: id)                 desc: flip state
-  tx:      Tx       #                                       desc: transaction meta
+  id:      Integer  # param: e.flip                       desc: flip identifier
+  ilkId:   String   # store: flips[id].ilk                desc: ilk identifier
+  ilk:     Ilk      # query: Ilk(id: ilkId)               desc: ilk object
+  urnId:   String   # store: flips[id].urn                desc: urn identifier
+  urn:     Urn      # query: Urn(id: urnId, ilkId: IlkId) desc: urn object
+  ink:     Float    # store: ilks[id].ink                 desc: siezed collateral
+  tab:     Float    # store: ilks[id].tab                 desc: debt to recover including liq. penalty
+  art:     Float    # param: e.art                        desc: siezed debt
+  bids:    [Bid]    # query: Bid(flipId: id)              desc: collateral auction(s)
+  flip:    Flip     # query: Flip(id: id)                 desc: flip state
+  tx:      Tx       #                                     desc: transaction meta
 }
 
 # Cat.flip.call
 # -> create FlipEvent id: e.n
 # -> create Bid id: e.id
 type FlipEvent {
-  id:      Integer  # param: e.n             desc: flip identifier
-  wad:     Float    # param: e.wad           desc: flip amount
-  tx:      Tx       #                        desc: transaction meta
+  id:      Integer  # param: e.n     desc: flip identifier
+  wad:     Float    # param: e.wad   desc: flip amount
+  tx:      Tx       #                desc: transaction meta
 }
 
 # Pit.file(ilk _).call   -> create FileEvent id: e.ilk
