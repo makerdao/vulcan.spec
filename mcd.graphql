@@ -1,8 +1,13 @@
 # TODO
-# support object retrieval at a given block height
+# support Ilk & Urb object retrieval at a given block height
 # polymorphic event types?
 # type VowGov {}
-
+# Queries
+#
+# Object History:
+#
+#   Urns: Use frob events?
+#   Ilks: Snapshot each block?
 
 # Vat.init.call
 # -> create Ilk id: e.ilk
@@ -33,7 +38,7 @@ type Ilk {
   tax:   Float       # store: Drip.ilks[id].rho     desc: tax
   Ink:   Float       # store: Vat.ilks[id].Ink      desc: total encumbered Gem
   Art:   Float       # store: Vat.ilks[id].Art      desc: total debt outstanding
-  files: [FileEvent] # query: FileEvent(id: id)     desc: risk param state change events
+  files: [FileEvent] # query: FileEvent(id: id)     desc: state change events
   bites: [BiteEvent] # query: BiteEvent(ilkId: id)  desc: ilk bite events
   frobs: [FrobEvent] # query: FrobEvent(ilkId: Id)  desc: ilk frob events
   created: Datetime
@@ -107,28 +112,31 @@ type DripGov {
 
 # Pit.frob.call -> create FrobEvent ilkId: e.ilk => e.dink e.dart
 type FrobEvent {
-  ilkId: String   # param:   e.ilk                        desc: ilk identifier
-  ilk:   Ilk      # query:   Ilk(id: ilkId, ilkId: ilkId) desc: ilk object
-  urnId: String   # param:   e.urn                        desc: urn identifier
-  urn:   Urn      # query:   Urn(id: urnId, ilkId: ilkId) desc: urn object
-  dink:  Float    # param:   e.dink                       desc: ink delta
-  dart:  Float    # param    e.dart                       desc: art delta
-  tx:    Tx       #                                       desc: transaction meta
+  ilkId: String   # param: e.ilk                        desc: ilk identifier
+  ilk:   Ilk      # query: Ilk(id: ilkId, ilkId: ilkId) desc: ilk object
+  urnId: String   # param: e.urn                        desc: urn identifier
+  urn:   Urn      # query: Urn(id: urnId, ilkId: ilkId) desc: urn object
+  dink:  Float    # param: e.dink                       desc: ink delta
+  dart:  Float    # param  e.dart                       desc: art delta
+  ink:   Float    # store: Vat.urns[ilkId][urnId].ink   desc: locked gem
+  art:   Float    # store: Vat.urns[ilkId][urnId].art   desc: outstanding debt
+  tx:    Tx       #                                     desc: transaction meta
 }
 
 # Cat.bite.call -> create BiteEvent id: e.flip
 type BiteEvent {
-  id:      Integer  # param: e.flip                       desc: flip identifier
-  ilkId:   String   # store: flips[id].ilk                desc: ilk identifier
-  ilk:     Ilk      # query: Ilk(id: ilkId)               desc: ilk object
-  urnId:   String   # store: flips[id].urn                desc: urn identifier
-  urn:     Urn      # query: Urn(id: urnId, ilkId: IlkId) desc: urn object
-  ink:     Float    # store: ilks[id].ink                 desc: siezed collateral
-  tab:     Float    # store: ilks[id].tab                 desc: debt to recover including liq. penalty
-  art:     Float    # param: e.art                        desc: siezed debt
-  bids:    [Bid]    # query: Bid(flipId: id)              desc: collateral auction(s)
-  flip:    Flip     # query: Flip(id: id)                 desc: flip state
-  tx:      Tx       #                                     desc: transaction meta
+  id:      Integer     # param: e.flip                       desc: flip identifier
+  ilkId:   String      # store: flips[id].ilk                desc: ilk identifier
+  ilk:     Ilk         # query: Ilk(id: ilkId)               desc: ilk object
+  urnId:   String      # store: flips[id].urn                desc: urn identifier
+  urn:     Urn         # query: Urn(id: urnId, ilkId: IlkId) desc: urn object
+  ink:     Float       # store: ilks[id].ink                 desc: siezed collateral
+  tab:     Float       # store: ilks[id].tab                 desc: debt to recover including liq. penalty
+  art:     Float       # param: e.art                        desc: siezed debt
+  bids:    [Bid]       # query: Bid(biteId: id)              desc: collateral auction(s)
+  flip:    Flip        # query: Flip(id: id)                 desc: flip state
+  flips:   [FlipEvent] # query: FlipEvent(id: id)            desc: flip events
+  tx:      Tx          #                                     desc: transaction meta
 }
 
 # Cat.flip.call
