@@ -1,25 +1,41 @@
-type Bid {
-
-  # Persisted bids mapping from flipper, flapper and flopper contracts
-  # Initial state is set via `kick` actions.
-  # Bid state is updated via `tend`  and `dent` actions.
-  # Final bid state is set via `deal` actions.
-
-  id:      Integer    # unique bid identifier
-  guy:     Address    # highest bidder
-  tic:     Era        # bid expiry
-  end:     Era        # auction expiry
-  lot:     Float      # lot amount
-  bid:     Float      # bid amount
-  gal:     Address    # receives auction proceeds
-  urn:     String     # urn identifier (flip only)
-  tab:     Address    # amount to raise - (tend/dent phase switch) (flip only)
-  dealt:   Boolean    # true if auction has been settled
-  market:  Market     # market detail
-  type:    BidType    # auction type - flip | flap | flop
-  events:  [BidEvent] # bid state change events
+# Cat.flip.call     -> create Bid id: e.id
+# Flipper.tick.call -> update Bid id: e.id
+# Flipper.tend.call -> update Bid id: e.id
+# Flipper.dent.call -> update Bid id: e.id
+# Flipper.deal.call -> update Bid id: e.id => dealt = true
+#
+# Flopper.kick.call -> create Bid id: e.id
+# Flopper.dent.call -> update Bid id: e.id
+# Flopper.deal.call -> update Bid id: e.id => dealt = true
+#
+# Flapper.kick.call -> create Bid id: e.id
+# Flapper.tend.call -> update Bid id: e.id
+# Flapper.deal.call -> update Bid id: e.id => dealt = true
+type Bid {  id:      Integer    # param: e.n             desc: unique bid identifier
+  biteId Integer    # param: e.id            desc: bite id        (flip only)
+  urnId:   String     # store: bids[id].urn    desc: urn identifier (flip only)
+  guy:     Address    # store: bids[id].guy    desc: highest bidder
+  tic:     Era        # store: bids[id].tic    desc: bid expiry
+  end:     Era        # store: bids[id].end    desc: auction expiry
+  lot:     Float      # store: bids[id].lot    desc: lot amount
+  bid:     Float      # store: bids[id].bid    desc: bid amount
+  gal:     Address    # store: bids[id].gal    desc: receives auction proceeds
+  tab:     Address    # store: bids[id].tab    desc: amount to raise - (tend/dent phase switch) (flip only)
+  dealt:   Boolean    #                        desc: true if auction has been settled
+  market:  Market     #                        desc: market detail
+  type:    BidType    #                        desc: auction type - flip | flap | flop
+  events:  [BidEvent] #                        desc: bid state change events
   created: Datetime
   updated: Datetime
+}
+
+type BidEvent {
+  bidId: Integer # param: e.id             desc: bid identifier (fk)
+  bid:   Bid     # query: Bid(id: bidId)   desc: ilk object
+  lot:   Float   # param: e.lot
+  bid:   Float   # param: e.bid
+  act:   BidAct  #                         desc: bid action
+  tx:    Tx      #                         desc: transaction meta
 }
 
 # Auction types
@@ -37,17 +53,6 @@ enum BidAct {
   DEAL
 }
 
-type BidEvent {
-  bidId: Integer # bid identifier
-  bid:   Bid     # bid object
-  act:   BidAct  # bid action
-  lot:   Float   # lot or null
-  bid:   Float   # bid or null
-  guy:   Address # msg.sender
-  tic:   Era     # tic or null
-  end:   Era     # end or null
-  tx:    Tx      # transaction meta
-}
 
 # Registry
 type Market {
