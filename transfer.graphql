@@ -1,35 +1,56 @@
 # Vat Dai movements
+# Vat.move -> create DaiTransfer => src: e.src dst: e.dst amt: e.rad                          act: MOVE
+# Vat.tune -> create DaiTransfer => src: NULL  dst: e.w   amt: ilks[e.i].rate * e.dart        act: TUNE
+# Vat.heal -> create DaiTransfer => src: e.u   dst: e.v   amt: e.rad                          act: HEAL
+# Vat.fold -> create DaiTransfer => src: NULL  dst: e.u   amt: ilks[e.i].rate * ilks[e.i].Art act: FOLD
 type DaiTransfer {
-  src:   Address # from
-  dst:   Address # to
-  amt:   Float   # amount
-  act:   DaiAct  # vat dai action
-  tx:    Tx      # tx meta
+  src: String # param: e.src desc: from (bytes32)
+  dst: String # param: e.dst desc: to   (bytes32)
+  amt: Float  # param: e.amt desc: amount
+  act: DaiAct #              desc: dai tranfer action
+  tx:  Tx     #              desc: transaction meta
 }
 
-# Dai transfer actions
-enum DaiAct {
-  MOVE
-  TUNE
-  HEAL
-  FOLD
+# Vat.move -> update DaiBalance => urn: e.src
+# Vat.move -> update DaiBalance => urn: e.dst
+# Vat.tune -> update DaiBalance => urn: e.dst
+# Vat.heal -> update DaiBalance => urn: e.u
+# Vat.heal -> update DaiBalance => urn: e.v
+# Vat.fold -> update DaiBalance => urn: e.dst
+type DaiBalance {
+  urn: String # param: e.urn      desc: account holder
+  wad: Float  # store: dai[urn]   desc: balance
 }
 
 # Vat Gem movements
+# Vat.slip -> create GemTransfer => src: NULL  dst: e.guy amt: e.rad                         act: SLIP
+# Vat.flux -> create GemTransfer => src: e.src dst: e.dst amt: e.rad                         act: FLUX
+# Vat.tune -> create GemTransfer => src: e.i   dst: e.v  amt: ilks[e.i].take * dink          act: TUNE
+# Vat.grab -> create GemTransfer => src: e.i   dst: e.v  amt: ilks[e.i].take * dink          act: GRAB
+# Vat.toll -> create GemTransfer => src: NULL  dst: e.u  amt: ilks[e.i].take * ilks[e.i].Ink act: GRAB
 type GemTransfer {
-  src:   Address # from
-  dst:   Address # to
-  ilk:   Address # ilk address
-  amt:   Float   # amount
-  act:   GemAct  # vat gem action
-  tx:    Tx      # tx meta
+  src:   String  # param: e.src  desc: from (bytes32)
+  dst:   String  # param: e.dst  desc: to   (bytes32)
+  ilkId: String  # param: e.ilk  desc: ilk identifier
+  amt:   Float   # param: e.rad  desc: amount
+  act:   GemAct  #               desc: gem transfer action
+  tx:    Tx      #               desc: transaction meta
 }
 
-# Gem transfer actions
-enum GemAct {
-  SLIP
-  FLUX
-  TUNE
-  GRAB
-  TOLL
+# Vat.slip -> update DaiBalance => ilk: e.ilk urn: e.guy
+# Vat.flux -> update DaiBalance => ilk: e.ilk urn: e.src
+# Vat.flux -> update DaiBalance => ilk: e.ilk urn: e.dst
+# Vat.tune -> update DaiBalance => ilk: e.i   urn: e.v
+# Vat.grab -> update DaiBalance => ilk: e.i   urn: e.v
+# Vat.toll -> update DaiBalance => ilk: e.i i urn: e.u
+type GemBalance {
+  ilk: String # param: e.ilk           desc: ilk identifier
+  urn: String # param: e.urn           desc: account holder
+  wad: Float  # store: gem[ilk][urn]   desc: balance
 }
+
+# GemTransfer actions
+enum GemAct { SLIP FLUX TUNE GRAB TOLL }
+
+# DaiTransfer actions
+enum DaiAct { MOVE TUNE HEAL FOLD }
