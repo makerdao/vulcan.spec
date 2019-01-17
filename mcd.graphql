@@ -118,8 +118,6 @@ type FrobEvent {
   urn:   Urn      # query: Urn(id: urnId, ilkId: ilkId) desc: urn object
   dink:  Float    # param: e.dink                       desc: ink delta
   dart:  Float    # param  e.dart                       desc: art delta
-  ink:   Float    # store: Vat.urns[ilkId][urnId].ink   desc: locked gem
-  art:   Float    # store: Vat.urns[ilkId][urnId].art   desc: outstanding debt
   tx:    Tx       #                                     desc: transaction meta
 }
 
