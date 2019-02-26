@@ -19,15 +19,12 @@
 # -> update Ilk id: e.ilk => ilks[e.ilk].tax ilks[e.ilk].rho
 # Vat.fold.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].rate
-# Vat.toll.call
-# -> update Ilk id: e.ilk => ilks[e.ilk].take
 # Vat.tune.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].Ink ilks[e.ilk].Art
 # Vat.grab.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].Ink ilks[e.ilk].Art
 type Ilk {
   id:    String      # param: e.ilk                 desc: ilk identifier e.g ETH
-  take:  Float       # store: Vat.ilks[id].take     desc: rate scaling factor
   rate:  Float       # store: Vat.ilks[id].rate     desc: debt scaling factor
   spot:  Float       # store: Pit.ilks[id].spot     desc: price feed with margin
   line:  Float       # store: Pit.ilks[id].line     desc: debt ceiling
