@@ -1,0 +1,31 @@
+type ManagedCdp {
+  lad:   Address # account owner - public key
+  id:    Integer # cdp manager identifier
+  urnId: String  # urn identifier
+  urn:   Urn     # urn object
+  ilkId: String  # ilk identifier
+  ilk:   Ilk     # ilk object
+}
+
+type Query {
+
+   allManagedCdps(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   ManagedCdpOrderBy,
+     condition: ManagedCdpCondition,
+     filter:    ManagedCdpFilter
+   ): [ManagedCdp]
+
+   getManagedCdp(
+     lad: Address
+   ): ManagedCdp
+
+   getManagedCdp(
+     id: Integer
+   ): ManagedCdp
+
+}
