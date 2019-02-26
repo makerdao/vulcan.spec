@@ -112,38 +112,52 @@ type DripGov {
 
 # Pit.frob.call -> create FrobEvent ilkId: e.ilk => e.dink e.dart
 type FrobEvent {
-  ilkId: String   # param: e.ilk                        desc: ilk identifier
-  ilk:   Ilk      # query: Ilk(id: ilkId, ilkId: ilkId) desc: ilk object
-  urnId: String   # param: e.urn                        desc: urn identifier
-  urn:   Urn      # query: Urn(id: urnId, ilkId: ilkId) desc: urn object
-  dink:  Float    # param: e.dink                       desc: ink delta
-  dart:  Float    # param  e.dart                       desc: art delta
-  tx:    Tx       #                                     desc: transaction meta
+  ilkId: String      # param: e.ilk              desc: ilk identifier
+  ilk:   Ilk         # query: Ilk(               desc: ilk object at event block height
+                     #   id:    ilkId,
+                     #   block: tx.blockNumber
+                     # )
+  urnId: String      # param: e.urn              desc: urn identifier
+  urn:   Urn         # query: Urn(               desc: urn object at event block height
+                     #   id:    urnId,
+                     #   ilkId: ilkId,
+                     #   block: tx.blockNumber
+                     # )
+  dink:  Float       # param: e.dink             desc: ink delta
+  dart:  Float       # param  e.dart             desc: art delta
+  tx:    Tx          #                           desc: transaction meta
 }
 
 # Cat.bite.call -> create BiteEvent id: e.flip
 type BiteEvent {
-  id:      Integer     # param: e.flip                       desc: flip identifier
-  ilkId:   String      # store: flips[id].ilk                desc: ilk identifier
-  ilk:     Ilk         # query: Ilk(id: ilkId)               desc: ilk object
-  urnId:   String      # store: flips[id].urn                desc: urn identifier
-  urn:     Urn         # query: Urn(id: urnId, ilkId: IlkId) desc: urn object
-  ink:     Float       # store: ilks[id].ink                 desc: siezed collateral
-  tab:     Float       # store: ilks[id].tab                 desc: debt to recover including liq. penalty
-  art:     Float       # param: e.art                        desc: siezed debt
-  bids:    [Bid]       # query: Bid(biteId: id)              desc: collateral auction(s)
-  flip:    Flip        # query: Flip(id: id)                 desc: flip state
-  flips:   [FlipEvent] # query: FlipEvent(id: id)            desc: flip events
-  tx:      Tx          #                                     desc: transaction meta
+  id:    Integer     # param: e.flip             desc: flip identifier
+  ilkId: String      # store: flips[id].ilk      desc: ilk identifier
+  ilk:   Ilk         # query: Ilk(               desc: ilk object at event block height
+                     #   id:    ilkId,
+                     #   block: tx.blockNumber
+                     # )
+  urnId: String      # store: flips[id].urn      desc: urn identifier
+  urn:   Urn         # query: Urn(               desc: urn object at event block height
+                     #   id:    urnId,
+                     #   ilkId: ilkId,
+                     #   block: tx.blockNumber
+                     # )
+  ink:   Float       # store: ilks[id].ink       desc: siezed collateral
+  tab:   Float       # store: ilks[id].tab       desc: debt to recover including liq. penalty
+  art:   Float       # param: e.art              desc: siezed debt
+  bids:  [Bid]       # query: Bid(biteId: id)    desc: collateral auction(s)
+  flip:  Flip        # query: Flip(id: id)       desc: flip state
+  flips: [FlipEvent] # query: FlipEvent(id: id)  desc: flip events
+  tx:    Tx          #                           desc: transaction meta
 }
 
 # Cat.flip.call
 # -> create FlipEvent id: e.n
 # -> create Bid id: e.id
 type FlipEvent {
-  id:      Integer  # param: e.n     desc: flip identifier
-  wad:     Float    # param: e.wad   desc: flip amount
-  tx:      Tx       #                desc: transaction meta
+  id:      Integer   # param: e.n     desc: flip identifier
+  wad:     Float     # param: e.wad   desc: flip amount
+  tx:      Tx        #                desc: transaction meta
 }
 
 # Pit.file(ilk _).call   -> create FileEvent id: e.ilk
