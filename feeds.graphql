@@ -1,7 +1,0 @@
-type Feed {
-  ilk:   String  # ilk identifier
-  src:   Address # price feed signer
-  med:   Address # medianizer address
-  val:   Float   # usd value
-  tx:    Tx      # transaction meta
-}
