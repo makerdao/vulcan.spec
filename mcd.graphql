@@ -26,14 +26,14 @@
 type Ilk {
   id:    String      # param: e.ilk                 desc: ilk identifier e.g ETH
   rate:  Float       # store: Vat.ilks[id].rate     desc: debt scaling factor
-  spot:  Float       # store: Pit.ilks[id].spot     desc: price feed with margin
-  line:  Float       # store: Pit.ilks[id].line     desc: debt ceiling
+  spot:  Float       # store: Vat.ilks[id].spot     desc: price feed with margin
+  line:  Float       # store: Vat.ilks[id].line     desc: debt ceiling
+  dust:  Float       # store: Vat.ilks[id].dust     desc: urn debt floor
   chop:  Float       # store: Cat.ilks[id].chop     desc: liquidation penalty
   lump:  Float       # store: Cat.ilks[id].lump     desc: flip auction lot size
   flip:  Address     # store: Cat.ilks[id].flip     desc: flipper contract
-  rho:   Era         # store: Drip.ilks[id].tax     desc: time of last drip
-  tax:   Float       # store: Drip.ilks[id].rho     desc: tax
-  Ink:   Float       # store: Vat.ilks[id].Ink      desc: total encumbered Gem
+  rho:   Era         # store: Jug.ilks[id].rho      desc: time of last drip
+  tax:   Float       # store: Jug.ilks[id].tax      desc: tax
   Art:   Float       # store: Vat.ilks[id].Art      desc: total debt outstanding
   files: [FileEvent] # query: FileEvent(id: id)     desc: state change events
   bites: [BiteEvent] # query: BiteEvent(ilkId: id)  desc: ilk bite events
