@@ -33,7 +33,7 @@ type Ilk {
   lump:  Float       # store: Cat.ilks[id].lump     desc: flip auction lot size
   flip:  Address     # store: Cat.ilks[id].flip     desc: flipper contract
   rho:   Era         # store: Jug.ilks[id].rho      desc: time of last drip
-  tax:   Float       # store: Jug.ilks[id].tax      desc: tax
+  duty:  Float       # store: Jug.ilks[id].duty     desc: tax
   Art:   Float       # store: Vat.ilks[id].Art      desc: total debt outstanding
   files: [FileEvent] # query: FileEvent(id: id)     desc: state change events
   bites: [BiteEvent] # query: BiteEvent(ilkId: id)  desc: ilk bite events
