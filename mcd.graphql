@@ -13,10 +13,10 @@
 # -> create Ilk id: e.ilk
 # Cat.file.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].chop ilks[e.ilk].lump ilks[e.ilk].flip
-# Pit.file(ilk _).call
+# Vat.file(ilk _).call
 # -> update Ilk id: e.ilk => ilks[e.ilk].spot ilks[e.ilk].line
-# Drip.file(ilk _).call
-# -> update Ilk id: e.ilk => ilks[e.ilk].tax ilks[e.ilk].rho
+# Jug.file(ilk _).call
+# -> update Ilk id: e.ilk => ilks[e.ilk].duty ilks[e.ilk].rho
 # Vat.fold.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].rate
 # Vat.tune.call
@@ -26,13 +26,13 @@
 type Ilk {
   id:    String      # param: e.ilk                 desc: ilk identifier e.g ETH
   rate:  Float       # store: Vat.ilks[id].rate     desc: debt scaling factor
-  spot:  Float       # store: Pit.ilks[id].spot     desc: price feed with margin
-  line:  Float       # store: Pit.ilks[id].line     desc: debt ceiling
+  spot:  Float       # store: Vat.ilks[id].spot     desc: price feed with margin
+  line:  Float       # store: Vat.ilks[id].line     desc: debt ceiling
   chop:  Float       # store: Cat.ilks[id].chop     desc: liquidation penalty
   lump:  Float       # store: Cat.ilks[id].lump     desc: flip auction lot size
   flip:  Address     # store: Cat.ilks[id].flip     desc: flipper contract
-  rho:   Era         # store: Drip.ilks[id].tax     desc: time of last drip
-  tax:   Float       # store: Drip.ilks[id].rho     desc: tax
+  rho:   Era         # store: Jug.ilks[id].rho      desc: time of last drip
+  duty:  Float       # store: Jug.ilks[id].duty     desc: duty
   Ink:   Float       # store: Vat.ilks[id].Ink      desc: total encumbered Gem
   Art:   Float       # store: Vat.ilks[id].Art      desc: total debt outstanding
   files: [FileEvent] # query: FileEvent(id: id)     desc: state change events
@@ -78,10 +78,10 @@ type Sin {
   updated: Datetime
 }
 
-# Pit.file(what _).call -> update PitGov id: e.address
-type PitGov {
+# Vat.file(what _).call -> update VatGov id: e.address
+type VatGov {
   id:      String       # param: e.address          desc: contract address
-  Line:    Float        # store: Pit.Line           desc: system debt ceiling
+  Line:    Float        # store: Vat.Line           desc: system debt ceiling
   files:   [FileEvent]  # query: FileEvent(id: id)  desc: state change events
   created: Datetime
   updated: Datetime
@@ -97,17 +97,17 @@ type CatGov {
   updated: Datetime
 }
 
-# Drip.file(what _).call -> update DripGov id: e.address
-type DripGov {
+# Jug.file(what _).call -> update JugGov id: e.address
+type JugGov {
   id:      String       # param: e.address           desc: contract address
-  repo:    Float        # store: Drip.repo           desc: debt scaling factor
-  tax:     Float        # store: Drip.tax            desc: debt scaling factor
+  base:    Float        # store: Jug.base            desc: debt scaling factor
+  duty:    Float        # store: Jug.duty            desc: debt scaling factor
   files:   [FileEvent]  # query: FileEvent(id: id)   desc: state change events
   created: Datetime
   updated: Datetime
 }
 
-# Pit.frob.call -> create FrobEvent ilkId: e.ilk => e.dink e.dart
+# Vat.frob.call -> create FrobEvent ilkId: e.ilk => e.dink e.dart
 type FrobEvent {
   ilkId: String      # param: e.ilk              desc: ilk identifier
   ilk:   Ilk         # query: Ilk(               desc: ilk object at event block height
@@ -157,12 +157,12 @@ type FlipEvent {
   tx:      Tx        #                desc: transaction meta
 }
 
-# Pit.file(ilk _).call   -> create FileEvent id: e.ilk
-# Pit.file(what _).call  -> create FileEvent id: e.address
-# Cat.file(ilk _).call   -> create FileEvent id: e.ilk
-# Cat.file(what _).call  -> create FileEvent id: e.address
-# Drip.file(ilk _).call  -> create FileEvent id: e.ilk
-# Drip.file(what _).call -> create FileEvent id: e.address
+# Vat.file(ilk _).call  -> create FileEvent id: e.ilk
+# Vat.file(what _).call -> create FileEvent id: e.address
+# Cat.file(ilk _).call  -> create FileEvent id: e.ilk
+# Cat.file(what _).call -> create FileEvent id: e.address
+# Jug.file(ilk _).call  -> create FileEvent id: e.ilk
+# Jug.file(what _).call -> create FileEvent id: e.address
 type FileEvent {
   id:    String   # param: e.ilk || e.address desc: ilk identifier or contract address
   what:  String   # param: e.what             desc: field to update
