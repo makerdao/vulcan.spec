@@ -164,7 +164,12 @@ type FlipEvent {
 # Drip.file(ilk _).call  -> create FileEvent id: e.ilk
 # Drip.file(what _).call -> create FileEvent id: e.address
 type FileEvent {
-  id:    String   # param: e.ilk || e.address desc: ilk identifier or contract address
+  id:    String   # param: e.address          desc: contract address
+  ilkId: String   # param: e.ilk              desc: ilk identifier
+  ilk:   Ilk      # query: Ilk(               desc: ilk object at event block height
+                  #   id:    ilkId,
+                  #   block: tx.blockNumber
+                  # )
   what:  String   # param: e.what             desc: field to update
   data:  String   # param: e.data             desc: parsed data - number or address
   tx:    Tx       #                           desc: transaction meta
