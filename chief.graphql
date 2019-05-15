@@ -1,0 +1,58 @@
+type Voter {
+  usr:    Address
+  locks:  [Lock]
+  frees:  [Free]
+  votes:  [Vote]
+  weight: Float
+}
+
+# Lock event
+type Lock {
+  usr: Address
+  amt: Float
+  tx:  Transaction
+}
+
+# Free event
+type Free {
+  usr: Address
+  amt: Float
+  tx:  Transaction
+}
+
+# Vote event
+type Vote {
+  usr:    Address
+  slate:  String
+  weight: Float
+  active: Boolean
+  tx:     Transaction
+}
+
+type Etch {
+  slate: String
+  tx:    Transaction
+}
+
+# A set of candidates (yays)
+type Slate {
+  hash:      String
+  yays:      [Address]
+  approvals: [Approval]
+  created:   Datetime
+}
+
+type Deposit {
+  usr:     Address
+  amt:     Float
+  created: Datetime
+  updated: Datetime
+}
+
+type Approval {
+  yay:     Address
+  amt:     Float
+  created: Datetime
+  updated: Datetime
+}
+
