@@ -1,4 +1,4 @@
-# Cat.flip.call     -> create Bid id: e.id
+# Flipper.kick.call -> create Bid id: e.id
 # Flipper.tick.call -> update Bid id: e.id
 # Flipper.tend.call -> update Bid id: e.id
 # Flipper.dent.call -> update Bid id: e.id
@@ -11,8 +11,8 @@
 # Flapper.kick.call -> create Bid id: e.id
 # Flapper.tend.call -> update Bid id: e.id
 # Flapper.deal.call -> update Bid id: e.id => dealt = true
-type Bid {  id:      Integer    # param: e.n             desc: unique bid identifier
-  biteId Integer    # param: e.id            desc: bite id        (flip only)
+type Bid {
+  id:      Integer    # param: e.n             desc: bid identifier (non-unique)
   urnId:   String     # store: bids[id].urn    desc: urn identifier (flip only)
   guy:     Address    # store: bids[id].guy    desc: highest bidder
   tic:     Era        # store: bids[id].tic    desc: bid expiry
