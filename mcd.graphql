@@ -1,14 +1,3 @@
-# TODO
-# support Ilk & Urb object retrieval at a given block height
-# polymorphic event types?
-# type VowGov {}
-# Queries
-#
-# Object History:
-#
-#   Urns: Use frob events?
-#   Ilks: Snapshot each block?
-
 # Vat.init.call
 # -> create Ilk id: e.ilk
 # Cat.file.call
@@ -24,20 +13,20 @@
 # Vat.grab.call
 # -> update Ilk id: e.ilk => ilks[e.ilk].Ink ilks[e.ilk].Art
 type Ilk {
-  id:    String      # param: e.ilk                 desc: ilk identifier e.g ETH
-  rate:  Float       # store: Vat.ilks[id].rate     desc: debt scaling factor
-  spot:  Float       # store: Pit.ilks[id].spot     desc: price feed with margin
-  line:  Float       # store: Pit.ilks[id].line     desc: debt ceiling
-  chop:  Float       # store: Cat.ilks[id].chop     desc: liquidation penalty
-  lump:  Float       # store: Cat.ilks[id].lump     desc: flip auction lot size
-  flip:  Address     # store: Cat.ilks[id].flip     desc: flipper contract
-  rho:   Era         # store: Jug.ilks[id].rho      desc: time of last drip
-  tax:   Float       # store: Jug.ilks[id].duty     desc: tax
-  Ink:   Float       # store: Vat.ilks[id].Ink      desc: total encumbered Gem
-  Art:   Float       # store: Vat.ilks[id].Art      desc: total debt outstanding
-  files: [FileEvent] # query: FileEvent(id: id)     desc: state change events
-  bites: [BiteEvent] # query: BiteEvent(ilkId: id)  desc: ilk bite events
-  frobs: [FrobEvent] # query: FrobEvent(ilkId: Id)  desc: ilk frob events
+  id:    String         # param: e.ilk                 desc: ilk identifier e.g ETH
+  rate:  Float          # store: Vat.ilks[id].rate     desc: debt scaling factor
+  spot:  Float          # store: Pit.ilks[id].spot     desc: price feed with margin
+  line:  Float          # store: Pit.ilks[id].line     desc: debt ceiling
+  chop:  Float          # store: Cat.ilks[id].chop     desc: liquidation penalty
+  lump:  Float          # store: Cat.ilks[id].lump     desc: flip auction lot size
+  flip:  Address        # store: Cat.ilks[id].flip     desc: flipper contract
+  rho:   Era            # store: Jug.ilks[id].rho      desc: time of last drip
+  tax:   Float          # store: Jug.ilks[id].duty     desc: tax
+  Ink:   Float          # store: Vat.ilks[id].Ink      desc: total encumbered Gem
+  Art:   Float          # store: Vat.ilks[id].Art      desc: total debt outstanding
+  files: [IlkFileEvent] # query: IlkFileEvent(id: id)  desc: state change events
+  bites: [BiteEvent]    # query: BiteEvent(ilkId: id)  desc: ilk bite events
+  frobs: [FrobEvent]    # query: FrobEvent(ilkId: id)  desc: ilk frob events
   created: Datetime
   updated: Datetime
 }
@@ -64,35 +53,6 @@ type Sin {
   tab:     Float       # store: sin[era]            desc: sin amount
   events:  SinEvent    # query: SinEvent(era: era)  desc: fess & flog events
   flogged: Boolean     #                            desc: true if flogged
-  created: Datetime
-  updated: Datetime
-}
-
-# Vat.file(what _).call -> update Vat id: e.address
-type VatGov {
-  id:      String       # param: e.address          desc: contract address
-  Line:    Float        # store: Vat.Line           desc: system debt ceiling
-  files:   [FileEvent]  # query: FileEvent(id: id)  desc: state change events
-  created: Datetime
-  updated: Datetime
-}
-
-# Cat.file(what _).call -> update CatGov id: e.address
-type CatGov {
-  id:      String       # param: e.address          desc: contract address
-  vat:     Address      # store: Cat.vat            desc: vat address
-  vow:     Address      # store: Cat.vow            desc: vow address
-  files:   [FileEvent]  # query: FileEvent(id: id)  desc: state change events
-  created: Datetime
-  updated: Datetime
-}
-
-# Jug.file(what _).call -> update JugGov id: e.address
-type JugGov {
-  id:      String       # param: e.address           desc: contract address
-  repo:    Float        # store: Jug.repo            desc: debt scaling factor
-  duty:    Float        # store: Jug.duty            desc: tax
-  files:   [FileEvent]  # query: FileEvent(id: id)   desc: state change events
   created: Datetime
   updated: Datetime
 }
@@ -139,17 +99,14 @@ type BiteEvent {
   tx:    Tx          #                           desc: transaction meta
 }
 
-# Vat.file(ilk _).call   -> create FileEvent id: e.ilk
-# Vat.file(what _).call  -> create FileEvent id: e.address
-# Cat.file(ilk _).call   -> create FileEvent id: e.ilk
-# Cat.file(what _).call  -> create FileEvent id: e.address
-# Jug.file(ilk _).call  -> create FileEvent id: e.ilk
-# Jug.file(what _).call -> create FileEvent id: e.address
-type FileEvent {
-  id:    String   # param: e.ilk || e.address desc: ilk identifier or contract address
-  what:  String   # param: e.what             desc: field to update
-  data:  String   # param: e.data             desc: parsed data - number or address
-  tx:    Tx       #                           desc: transaction meta
+# Vat.file(ilk _).call -> create IlkFileEvent ilkId: e.ilk
+# Cat.file(ilk _).call -> create IlkFileEvent ilkId: e.ilk
+# Jug.file(ilk _).call -> create IlkFileEvent ilkId: e.ilk
+type IlkFileEvent {
+  ilkId:    String  # param: e.ilk              desc: ilk identifier
+  what:  String     # param: e.what             desc: field to update
+  data:  String     # param: e.data             desc: parsed data - number or address
+  tx:    Tx         #                           desc: transaction meta
 }
 
 # Vow.fess.call -> create SinEvent era: now
@@ -222,16 +179,16 @@ type Query {
      interval: String # optionally specify a postgres aggregation interval e.g '1 day'
    ): [Urn]
 
-   allFiles(
+   allIlkFiles(
      first:     Int,
      last:      Int,
      offset:    Int,
      before:    Cursor,
      after:     Cursor,
-     orderBy:   FileOrderBy,
-     condition: FileCondition,
-     filter:    FileFilter
-   ): [FileEvent]
+     orderBy:   IlkFileOrderBy,
+     condition: IlkFileCondition,
+     filter:    IlkFileFilter
+   ): [IlkFileEvent]
 
    allFrobs(
      first:     Int,

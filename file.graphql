@@ -1,0 +1,38 @@
+# Vat.file(what _).call  -> create FileEvent id: e.address
+# Cat.file(what _).call  -> create FileEvent id: e.address
+# Jug.file(what _).call -> create FileEvent id: e.address
+type FileEvent {
+  id:    String   # param: e.ilk || e.address desc: ilk identifier or contract address
+  what:  String   # param: e.what             desc: field to update
+  data:  String   # param: e.data             desc: parsed data - number or address
+  tx:    Tx       #                           desc: transaction meta
+}
+
+# Vat.file(what _).call -> update Vat id: e.address
+type VatGov {
+  id:      String       # param: e.address          desc: contract address
+  Line:    Float        # store: Vat.Line           desc: system debt ceiling
+  files:   [FileEvent]  # query: FileEvent(id: id)  desc: state change events
+  created: Datetime
+  updated: Datetime
+}
+
+# Cat.file(what _).call -> update CatGov id: e.address
+type CatGov {
+  id:      String       # param: e.address          desc: contract address
+  vat:     Address      # store: Cat.vat            desc: vat address
+  vow:     Address      # store: Cat.vow            desc: vow address
+  files:   [FileEvent]  # query: FileEvent(id: id)  desc: state change events
+  created: Datetime
+  updated: Datetime
+}
+
+# Jug.file(what _).call -> update JugGov id: e.address
+type JugGov {
+  id:      String       # param: e.address           desc: contract address
+  repo:    Float        # store: Jug.repo            desc: debt scaling factor
+  duty:    Float        # store: Jug.duty            desc: tax
+  files:   [FileEvent]  # query: FileEvent(id: id)   desc: state change events
+  created: Datetime
+  updated: Datetime
+}
