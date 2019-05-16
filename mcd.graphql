@@ -1,37 +1,78 @@
-# Vat.init.call
-# -> create Ilk id: e.ilk
-# Cat.file.call
-# -> update Ilk id: e.ilk => ilks[e.ilk].chop ilks[e.ilk].lump ilks[e.ilk].flip
-# Pit.file(ilk _).call
-# -> update Ilk id: e.ilk => ilks[e.ilk].spot ilks[e.ilk].line
-# Jug.file(ilk _).call
-# -> update Ilk id: e.ilk => ilks[e.ilk].tax ilks[e.ilk].rho
-# Vat.fold.call
-# -> update Ilk id: e.ilk => ilks[e.ilk].rate
-# Vat.tune.call
-# -> update Ilk id: e.ilk => ilks[e.ilk].Ink ilks[e.ilk].Art
-# Vat.grab.call
-# -> update Ilk id: e.ilk => ilks[e.ilk].Ink ilks[e.ilk].Art
+# TODO - cage
+#      - bite id uniqueness
+# -----------------------------------------------------------------------------
+# Ilk state-change triggers
+# -----------------------------------------------------------------------------
+# Spot.file(pip) -> update Ilk id: e.ilk => ilks[e.ilk].pip  | IlkFileEvent
+# Spot.file(mat) -> update Ilk id: e.ilk => ilks[e.ilk].mat  | IlkFileEvent
+#
+# Cat.file(chop) -> update Ilk id: e.ilk => ilks[e.ilk].chop | IlkFileEvent
+# Cat.file(lump) -> update Ilk id: e.ilk => ilks[e.ilk].lump | IlkFileEvent
+# Cat.file(flip) -> update Ilk id: e.ilk => ilks[e.ilk].flip | IlkFileEvent
+#
+# Jug.file(duty) -> update Ilk id: e.ilk => ilks[e.ilk].duty | IlkFileEvent
+# Jug.drip       -> update Ilk id: e.ilk => ilks[e.ilk].rho  |
+#
+# Vat.init       -> create Ilk id: e.ilk                     |
+# Vat.fold       -> update Ilk id: e.ilk => ilks[e.ilk].rate |
+# Vat.frob       -> update Ilk id: e.ilk => ilks[e.ilk].Art  | FrobEvent
+# Vat.grab       -> update Ilk id: e.ilk => ilks[e.ilk].Art  |
+# Vat.file(dust) -> update Ilk id: e.ilk => ilks[e.ilk].dust | IlkFileEvent
+# Vat.file(line) -> update Ilk id: e.ilk => ilks[e.ilk].line | IlkFileEvent
+# Vat.file(spot) -> update Ilk id: e.ilk => ilks[e.ilk].spot | IlkFileEvent
+#
+# Vow.file(wait) -> update Ilk id: e.ilk => ilks[e.ilk].wait | IlkFileEvent
+# Vow.file(bump) -> update Ilk id: e.ilk => ilks[e.ilk].bump | IlkFileEvent
+# Vow.file(sump) -> update Ilk id: e.ilk => ilks[e.ilk].sump | IlkFileEvent
+# Vow.file(hump) -> update Ilk id: e.ilk => ilks[e.ilk].hump | IlkFileEvent
+
+# -----------------------------------------------------------------------------
+# Ilk Object
+# -----------------------------------------------------------------------------
 type Ilk {
-  id:    String         # param: e.ilk                 desc: ilk identifier e.g ETH
-  rate:  Float          # store: Vat.ilks[id].rate     desc: debt scaling factor
-  spot:  Float          # store: Pit.ilks[id].spot     desc: price feed with margin
-  line:  Float          # store: Pit.ilks[id].line     desc: debt ceiling
-  chop:  Float          # store: Cat.ilks[id].chop     desc: liquidation penalty
-  lump:  Float          # store: Cat.ilks[id].lump     desc: flip auction lot size
-  flip:  Address        # store: Cat.ilks[id].flip     desc: flipper contract
-  rho:   Era            # store: Jug.ilks[id].rho      desc: time of last drip
-  tax:   Float          # store: Jug.ilks[id].duty     desc: tax
-  Ink:   Float          # store: Vat.ilks[id].Ink      desc: total encumbered Gem
-  Art:   Float          # store: Vat.ilks[id].Art      desc: total debt outstanding
-  files: [IlkFileEvent] # query: IlkFileEvent(id: id)  desc: state change events
-  bites: [BiteEvent]    # query: BiteEvent(ilkId: id)  desc: ilk bite events
-  frobs: [FrobEvent]    # query: FrobEvent(ilkId: id)  desc: ilk frob events
+  id:    String         # param: e.ilk                   desc: ilk identifier e.g ETH
+  pip:   Address        # store: Spot.ilks[id].pip       desc: price feed contract
+  mat:   Address        # store: Spot.ilks[id].mat       desc: liquidation ratio
+  chop:  Float          # store: Cat.ilks[id].chop       desc: liquidation penalty
+  lump:  Float          # store: Cat.ilks[id].lump       desc: flip auction lot size
+  flip:  Address        # store: Cat.ilks[id].flip       desc: flipper contract
+  rho:   Era            # store: Jug.ilks[id].rho        desc: time of last drip
+  tax:   Float          # store: Jug.ilks[id].duty       desc: tax
+  Art:   Float          # store: Vat.ilks[id].Art        desc: total debt outstanding
+  rate:  Float          # store: Vat.ilks[id].rate       desc: debt scaling factor
+  spot:  Float          # store: Vat.ilks[id].spot       desc: price feed with margin
+  line:  Float          # store: Vat.ilks[id].line       desc: debt ceiling
+  dust:  Float          # store: Vat.ilks[id].dust       desc: debt floor
+  wait:  Float          # store: Vow.ilks[id].wait       desc: flop delay
+  bump:  Float          # store: Vow.ilks[id].bump       desc: flap lot size
+  sump:  Float          # store: Vow.ilks[id].sump       desc: flop lot size
+  hump:  Float          # store: Vow.ilks[id].hump       desc: surplus buffer
+  files: [IlkFileEvent] # query: IlkFileEvent(ilkId: id) desc: state change events
+  bites: [BiteEvent]    # query: BiteEvent(ilkId: id)    desc: ilk bite events
+  frobs: [FrobEvent]    # query: FrobEvent(ilkId: id)    desc: ilk frob events
   created: Datetime
   updated: Datetime
 }
+# -----------------------------------------------------------------------------
+# Ilk gov (file) event object
+# -----------------------------------------------------------------------------
+type IlkFileEvent {
+  ilkId: String     # param: e.ilk              desc: ilk identifier
+  what:  String     # param: e.what             desc: field to update
+  data:  String     # param: e.data             desc: parsed data - number or address
+  tx:    Tx         #                           desc: transaction meta
+}
 
-# Vat.tune.call -> update Urn id: e.u ilkId: e.i
+# -----------------------------------------------------------------------------
+# Urn state-change triggers
+# -----------------------------------------------------------------------------
+# Vat.frob -> update Urn id: e.u ilkId: e.i => urns[urn].ink | FrobEvent
+#                                           => urns[urn].art |
+# Cat.bite -> update Urn id: e.u ilkId: e.i => urns[urn].ink | BiteEvent
+#                                           => urns[urn].art |
+# -----------------------------------------------------------------------------
+# Urn Object
+# -----------------------------------------------------------------------------
 type Urn {
   id:      String       # param: e.urn                                desc: urn identifier
   ilkId:   String       # param: e.ilk                                desc: ilk identifier
@@ -45,19 +86,9 @@ type Urn {
   created: Datetime
   updated: Datetime
 }
-
-# Vow.fess.call -> create Sin era: now
-# Vow.flog.call -> update Sin era: e.era => flogged
-type Sin {
-  era:     Integer     # param: e.era               desc: bite timestamp
-  tab:     Float       # store: sin[era]            desc: sin amount
-  events:  SinEvent    # query: SinEvent(era: era)  desc: fess & flog events
-  flogged: Boolean     #                            desc: true if flogged
-  created: Datetime
-  updated: Datetime
-}
-
-# Vat.frob.call -> create FrobEvent ilkId: e.ilk => e.dink e.dart
+# -----------------------------------------------------------------------------
+# Urn Frob Event Object
+# -----------------------------------------------------------------------------
 type FrobEvent {
   ilkId: String      # param: e.ilk              desc: ilk identifier
   ilk:   Ilk         # query: Ilk(               desc: ilk object at event block height
@@ -74,8 +105,9 @@ type FrobEvent {
   dart:  Float       # param  e.dart             desc: art delta
   tx:    Tx          #                           desc: transaction meta
 }
-
-# Cat.bite.call -> create BiteEvent id: e.id
+# -----------------------------------------------------------------------------
+# Urn Bite Event Object
+# -----------------------------------------------------------------------------
 type BiteEvent {
   id:    Integer     # param: e.id               desc: bite/bid identifier
   ilkId: String      # param: e.ilk              desc: ilk identifier
@@ -99,15 +131,18 @@ type BiteEvent {
   tx:    Tx          #                           desc: transaction meta
 }
 
-# Vat.file(ilk _).call -> create IlkFileEvent ilkId: e.ilk
-# Cat.file(ilk _).call -> create IlkFileEvent ilkId: e.ilk
-# Jug.file(ilk _).call -> create IlkFileEvent ilkId: e.ilk
-type IlkFileEvent {
-  ilkId:    String  # param: e.ilk              desc: ilk identifier
-  what:  String     # param: e.what             desc: field to update
-  data:  String     # param: e.data             desc: parsed data - number or address
-  tx:    Tx         #                           desc: transaction meta
+# Vow.fess.call -> create Sin era: now
+# Vow.flog.call -> update Sin era: e.era => flogged
+type Sin {
+  era:     Integer     # param: e.era               desc: bite timestamp
+  tab:     Float       # store: sin[era]            desc: sin amount
+  events:  SinEvent    # query: SinEvent(era: era)  desc: fess & flog events
+  flogged: Boolean     #                            desc: true if flogged
+  created: Datetime
+  updated: Datetime
 }
+
+
 
 # Vow.fess.call -> create SinEvent era: now
 # Vow.flog.call -> create SinEvent era: e.era
