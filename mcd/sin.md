@@ -54,9 +54,9 @@ type Query {
      offset:    Int,
      before:    Cursor,
      after:     Cursor,
-     orderBy:   UrnOrderBy,
-     condition: UrnCondition,
-     filter:    UrnFilter
+     orderBy:   QueuedSinOrderBy,
+     condition: QueuedSinCondition,
+     filter:    QueuedSinFilter
    ): [Sin]
 
    getQueuedSin(
@@ -69,9 +69,9 @@ type Query {
      offset:    Int,
      before:    Cursor,
      after:     Cursor,
-     orderBy:   BiteOrderBy,
-     condition: BiteCondition,
-     filter:    BiteFilter
+     orderBy:   SinQueueEventOrderBy,
+     condition: SinQueueEventCondition,
+     filter:    SinQueueEventFilter
    ): [SinQueueEvent]
 
 }

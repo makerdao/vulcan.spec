@@ -2,7 +2,7 @@
 
 Ilk objects hold Cdp state - `ink` and `art`.
 
-```ruby=
+```graphql
 type Urn {
   id:      Address      # urn owner
   ilkId:   String       # ilk identifier
@@ -35,7 +35,7 @@ Urn state is changed via these functions:
 
 An `FrobEvent` is created when `frob` is executed.
 
-```ruby=
+```graphql
 type FrobEvent {
   ilkId: String      # e.ilk - ilk identifier
   ilk:   Ilk         # ilk object at event block height
@@ -51,7 +51,7 @@ type FrobEvent {
 
 An `BiteEvent` is created when `bite` is executed.
 
-```ruby=
+```graphql
 type BiteEvent {
   id:    Integer     # e.id - bite/bid identifier
   ilkId: String      # e.ilk - ilk identifier

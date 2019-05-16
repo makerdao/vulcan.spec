@@ -2,7 +2,7 @@
 
 Ilk objects hold configuration paramaters for a particular type of collateral.
 
-```ruby=
+```graphql
 type Ilk {
   id:    String         # ilk identifier e.g ETH
   pip:   Address        # price feed contract
@@ -59,7 +59,7 @@ Ilk parameters are changed via these functions:
 An `IlkFileEvent` is created each time a governance action (`file`) is executed
 for a particular Ilk.
 
-```ruby=
+```graphql
 type IlkFileEvent {
   ilkId: String     # ilk identifier
   what:  String     # field changed
@@ -74,7 +74,7 @@ Basic `Ilk` retrieval with postgraphile-style collection filtering:
 
 TODO: Aggregation. History.
 
-```ruby=
+```graphql
 type Query {
 
    allIlks(
