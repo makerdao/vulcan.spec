@@ -1,9 +1,0 @@
-# Dss Spotter Contract
-# https://github.com/makerdao/dss-deploy/blob/master/src/poke.sol
-
-type PokeEvent {
-  ilk:   String  # ilk identifier
-  val:   Float   # medianized price
-  spot:  Spot    # medianized price with safety margin
-  tx:    Tx      # transaction meta
-}
