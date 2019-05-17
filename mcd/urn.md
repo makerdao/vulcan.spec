@@ -72,7 +72,7 @@ Basic `Urn` retrieval with postgraphile-style collection filtering:
 
 TODO: Aggregation. History.
 
-```ruby=
+```graphql
 type Query {
 
    allUrns(
