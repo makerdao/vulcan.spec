@@ -5,7 +5,6 @@ Ilk objects hold Cdp state - `ink` and `art`.
 ```graphql
 type Urn {
   id:      Address      # urn owner
-  ilkId:   String       # ilk identifier
   ilk:     Ilk          # ilk object
   ink:     Float        # locked gem
   art:     Float        # outstanding debt
@@ -37,9 +36,7 @@ An `FrobEvent` is created when `frob` is executed.
 
 ```graphql
 type FrobEvent {
-  ilkId: String      # e.ilk - ilk identifier
   ilk:   Ilk         # ilk object at event block height
-  urnId: String      # e.urn - urn identifier
   urn:   Urn         # urn object at event block height
   dink:  Float       # e.dink - ink delta
   dart:  Float       # e.dart - art delta
@@ -54,9 +51,7 @@ An `BiteEvent` is created when `bite` is executed.
 ```graphql
 type BiteEvent {
   id:    Integer     # e.id - bite/bid identifier
-  ilkId: String      # e.ilk - ilk identifier
   ilk:   Ilk         # ilk object at tx block height
-  urnId: String      # e.urn - urn identifier
   urn:   Urn         # urn object at tx block height
   bid:   Bid         # bid object at tx block height
   lot:   Float       # e.lot - siezed collateral
@@ -87,8 +82,8 @@ type Query {
    ): [Urn]
 
    getUrn(
-     ilkId: String!
-     urnId: String!
+     ilk: String!
+     urn: String!
      blockNumber: Int # optionally retrieve ilk state at a given block height
    ): Urn
 

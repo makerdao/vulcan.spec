@@ -61,7 +61,7 @@ for a particular Ilk.
 
 ```graphql
 type IlkFileEvent {
-  ilkId: String     # ilk identifier
+  ilk:   Ilk        # ilk object
   what:  String     # field changed
   data:  String     # parsed data (number or address)
   tx:    Tx         # transaction meta

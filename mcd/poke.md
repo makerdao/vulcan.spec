@@ -6,7 +6,7 @@ contract and submitted to the Vat.
 
 ```graphql
 type PokeEvent {
-  ilk:   String  # ilk identifier
+  ilk:   Ilk     # ilk object
   val:   Float   # medianized price
   spot:  Spot    # medianized price with safety margin
   tx:    Tx      # transaction meta

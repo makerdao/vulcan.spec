@@ -11,7 +11,6 @@ TODO Discuss treatment of bid uniqueness, auction typing.
 
 ```graphql
 type Bid {
-  pk:      Integer    # vulcanize identifier (unique)
   id:      Integer    # bid identifier (non-unique)
   lad:     Address    # auction contract address
   urn:     Address    # urn address (flip only)
