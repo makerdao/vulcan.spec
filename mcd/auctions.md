@@ -4,35 +4,39 @@ There are three auction types - the collateral auction `Flip`, the debt auction
 `Flop` and the surplus auction `Flap`. `Flap` and `Flop` auctions are initiated
 by the `Vow`. Collateral auctions are initiated by the `Cat`.
 
-A single `Bid` type is used to represent bids for all auctions. Bids are unique
-by `id` and `lad` - the action contract address.
-
-TODO Discuss treatment of bid uniqueness, auction typing.
+Bids are unique by `id` and `lad` - the action contract address.
 
 ```graphql
-type Bid {
-  id:      Integer    # bid identifier (non-unique)
-  lad:     Address    # auction contract address
-  urn:     Address    # urn address (flip only)
-  guy:     Address    # highest bidder
-  tic:     Era        # bid expiry
-  end:     Era        # auction expiry
-  lot:     Float      # lot amount
-  bid:     Float      # bid amount
-  gal:     Address    # receives auction proceeds
-  tab:     Address    # amount to raise - (tend/dent phase switch) (flip only)
-  dealt:   Boolean    # true if auction has been settled
-  market:  Market     # market detail
-  type:    BidType    # auction type - flip | flap | flop
-  events:  [BidEvent] # bid state change events
+interface BidLike {
+  id(lad: Address = LAD): Integer # auction contract bid identifier
+  guy: Address                    # highest bidder
+  tic: Era                        # bid expiry
+  end: Era                        # auction expiry
+  lot: Float                      # lot amount
+  bid: Float                      # bid amount
+  gal: Address                    # receives auction proceeds
+  dealt: Boolean                  # true if auction has been settled
+  events: [BidEvent]              # bid state change events
   created: Datetime
   updated: Datetime
 }
 
-enum BidType {
-  FLIP
-  FLAP
-  FLOP
+type Flip implements BidLike {
+  lot:     Float      # GEM amount
+  bid:     Float      # DAI amount
+  urn:     Urn        # urn object
+  ilk:     Ilk        # ilk object
+  tab:     Integer    # amount of Dai to raise - (tend/dent phase switch)
+}
+
+type Flap implements BidLike {
+  lot:     Float      # DAI amount
+  bid:     Float      # MKR amount
+}
+
+type Flop implements BidLike {
+  lot:     Float      # MKR amount
+  bid:     Float      # DAI amount
 }
 ```
 
@@ -46,6 +50,8 @@ type BidEvent {
   act:   BidAct  # bid action
   tx:    Tx      # transaction meta
 }
+
+union Bid = Flip | Flap | Flop
 
 enum BidAct {
   KICK
@@ -86,7 +92,7 @@ Retrieve Bids with postgraphile-style collection filtering:
 ```graphql
 type Query {
 
-   allBids(
+   allFlips(
      first:     Int,
      last:      Int,
      offset:    Int,
@@ -95,12 +101,45 @@ type Query {
      orderBy:   BidOrderBy,
      condition: BidCondition,
      filter:    BidFilter
-   ): [Bid]
+   ): [Flip]
 
-   getBid(
-     pk:          Int!
-     blockNumber: Int # optionally retrieve bid state at a given block height
-   ): Bid
+   getFlip(
+     id:          Int!
+     ilk:         String!
+     blockNumber: Int
+   ): Flip
+
+   allFlaps(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BidOrderBy,
+     condition: BidCondition,
+     filter:    BidFilter
+   ): [Flap]
+
+   getFlap(
+     id:          Int!
+     blockNumber: Int
+   ): Flap
+
+   allFlops(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BidOrderBy,
+     condition: BidCondition,
+     filter:    BidFilter
+   ): [Flop]
+
+   getFlop(
+     id:          Int!
+     blockNumber: Int
+   ): Flop
 
    allBidEvents(
      first:     Int,
