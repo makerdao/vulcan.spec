@@ -17,10 +17,6 @@ type Ilk {
   spot:  Float          # price feed with margin
   line:  Float          # debt ceiling
   dust:  Float          # debt floor
-  wait:  Float          # flop delay
-  bump:  Float          # flap lot size
-  sump:  Float          # flop lot size
-  hump:  Float          # surplus buffer
   files: [IlkFileEvent] # state change events
   bites: [BiteEvent]    # ilk bite events
   frobs: [FrobEvent]    # ilk frob events
@@ -49,10 +45,6 @@ Ilk parameters are changed via these functions:
 | Vat.file(dust) | DSNote    | Vat.ilks[e.ilk].dust | IlkFileEvent |
 | Vat.file(line) | DSNote    | Vat.ilks[e.ilk].line | IlkFileEvent |
 | Vat.file(spot) | DSNote    | Vat.ilks[e.ilk].spot | IlkFileEvent |
-| Vow.file(wait) | DSNote    | Vat.ilks[e.ilk].wait | IlkFileEvent |
-| Vow.file(bump) | DSNote    | Vat.ilks[e.ilk].bump | IlkFileEvent |
-| Vow.file(sump) | DSNote    | Vat.ilks[e.ilk].sump | IlkFileEvent |
-| Vow.file(hump) | DSNote    | Vat.ilks[e.ilk].hump | IlkFileEvent |
 
 ## IlkFileEvent
 
