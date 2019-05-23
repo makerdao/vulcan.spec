@@ -11,7 +11,7 @@ type Ilk {
   lump:  Float          # flip auction lot size
   flip:  Address        # flipper contract
   rho:   Era            # time of last drip
-  tax:   Float          # tax
+  duty:  Float          # stability fee
   Art:   Float          # total debt outstanding
   rate:  Float          # debt scaling factor
   spot:  Float          # price feed with margin
