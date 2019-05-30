@@ -19,7 +19,7 @@ type PokeEvent {
 
 | Call           | Log Event | State change           | Vulcanize Event |
 | -------------- | --------- | ---------------------- | --------------- |
-| Spotter.poke   | Poke      | -                      | PokeEvent       |
+| Spotter.poke   | Poke      | Vat.ilks[e.ilk].spot   | PokeEvent       |
 
 ## Poke Query
 
