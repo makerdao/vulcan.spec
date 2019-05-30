@@ -44,7 +44,7 @@ Ilk parameters are changed via these functions:
 | Vat.grab       | DSNote    | Vat.ilks[e.ilk].Art  |              |
 | Vat.file(dust) | DSNote    | Vat.ilks[e.ilk].dust | IlkFileEvent |
 | Vat.file(line) | DSNote    | Vat.ilks[e.ilk].line | IlkFileEvent |
-| Vat.file(spot) | DSNote    | Vat.ilks[e.ilk].spot | IlkFileEvent |
+| Spot.poke      | Poke      | Vat.ilks[e.ilk].spot | PokeEvent    |
 
 ## IlkFileEvent
 
