@@ -54,7 +54,7 @@ type BiteEvent {
   ilk:   Ilk         # ilk object at tx block height
   urn:   Urn         # urn object at tx block height
   bid:   Bid         # bid object at tx block height
-  lot:   Float       # e.lot - siezed collateral
+  ink:   Float       # e.ink - siezed collateral
   art:   Float       # e.art - siezed debt
   tab:   Float       # e.tab - debt to recover
   tx:    Tx          # transaction meta
