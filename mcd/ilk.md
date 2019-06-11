@@ -6,7 +6,7 @@ Ilk objects hold configuration paramaters for a particular type of collateral.
 type Ilk {
   id:    String         # ilk identifier e.g ETH
   pip:   Address        # price feed contract
-  mat:   Address        # liquidation ratio
+  mat:   Float          # liquidation ratio
   chop:  Float          # liquidation penalty
   lump:  Float          # flip auction lot size
   flip:  Address        # flipper contract
