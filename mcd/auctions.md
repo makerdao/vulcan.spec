@@ -76,6 +76,7 @@ Bids are created on `kick` and updated with every subsequent bid event.
 | Flipper.deal   | DSNote    | Flipper.bids[e.id]  | BidEvent        |
 | Flipper.yank   | DSNote    | Flipper.bids[e.id]  | BidEvent        |
 | Flopper.kick   | Kick      | Flopper.bids[e.id]  | BidEvent        |
+| Flopper.tick   | DSNote    | Flopper.bids[e.id]  | BidEvent        |
 | Flopper.dent   | DSNote    | Flopper.bids[e.id]  | BidEvent        |
 | Flopper.deal   | DSNote    | Flopper.bids[e.id]  | BidEvent        |
 | Flopper.yank   | DSNote    | Flopper.bids[e.id]  | BidEvent        |
