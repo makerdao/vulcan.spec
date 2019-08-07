@@ -1,5 +1,5 @@
 type ManagedCdp {
-  lad:   Address # account owner - public key
+  usr:   Address # account owner - public key
   id:    Integer # cdp manager identifier
   urnId: String  # urn identifier
   urn:   Urn     # urn object
@@ -21,7 +21,7 @@ type Query {
    ): [ManagedCdp]
 
    getManagedCdp(
-     lad: Address
+     usr: Address
    ): ManagedCdp
 
    getManagedCdp(
