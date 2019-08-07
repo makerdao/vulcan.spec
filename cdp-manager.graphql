@@ -1,10 +1,11 @@
 type ManagedCdp {
-  usr:   Address # account owner - public key
-  id:    Integer # cdp manager identifier
-  urnId: String  # urn identifier
-  urn:   Urn     # urn object
-  ilkId: String  # ilk identifier
-  ilk:   Ilk     # ilk object
+  usr:     Address  # account owner - public key
+  id:      Integer  # cdp manager identifier
+  urnId:   String   # urn identifier
+  urn:     Urn      # urn object
+  ilkId:   String   # ilk identifier
+  ilk:     Ilk      # ilk object
+  created: DateTime # derived from NewCdp event
 }
 
 type Query {
