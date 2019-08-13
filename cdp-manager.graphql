@@ -21,10 +21,6 @@ type Query {
    ): [ManagedCdp]
 
    getManagedCdp(
-     usr: Address
-   ): ManagedCdp
-
-   getManagedCdp(
      id: Integer
    ): ManagedCdp
 
