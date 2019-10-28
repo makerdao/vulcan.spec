@@ -8,8 +8,6 @@ type Urn {
   ilk:     Ilk          # ilk object
   ink:     Float        # locked gem
   art:     Float        # outstanding debt
-  ratio:   Float        # collateralization ratio: (ink * ilk.spot) / (art * ilk.rate)
-  safe:    Boolean      # true if sufficiently collateralized (ratio > 1)
   frobs:   [FrobEvent]  # state change events
   bites:   [BiteEvent]  # liquidation events
   created: Datetime
