@@ -141,7 +141,7 @@ type Query {
      blockNumber: Int
    ): Flop
 
-   allBidEvents(
+   allFlipBidEvents(
      first:     Int,
      last:      Int,
      offset:    Int,
@@ -150,7 +150,28 @@ type Query {
      orderBy:   BidEventOrderBy,
      condition: BidEventCondition,
      filter:    BidEventFilter
-   ): [BidEvent]
+   ): [BidEvent] # the bid field on these events are flips
 
+   allFlapBidEvents(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BidEventOrderBy,
+     condition: BidEventCondition,
+     filter:    BidEventFilter
+   ): [BidEvent] # the bid field on these events are flaps
+
+   allFlopBidEvents(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BidEventOrderBy,
+     condition: BidEventCondition,
+     filter:    BidEventFilter
+   ): [BidEvent] # the bid field on these events are flops
 }
 ```
