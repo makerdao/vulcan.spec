@@ -23,8 +23,8 @@ Urn state is changed via these functions:
 | -------------- | --------- | ---------------------- | --------------- |
 | Vat.frob       | DSNote    | Vat.urns[e.i][e.u].ink | FrobEvent       |
 | Vat.frob       | DSNote    | Vat.urns[e.i][e.u].art | FrobEvent       |
-| Vat.fork       | DSNote    | Vat.urns[e.i][e.u].ink |                 |
-| Vat.fork       | DSNote    | Vat.urns[e.i][e.u].art |                 |
+| Vat.fork       | DSNote    | Vat.urns[e.i][e.u].ink | ForkEvent       |
+| Vat.fork       | DSNote    | Vat.urns[e.i][e.u].art | ForkEvent       |
 | Cat.bite       | Bite      | Vat.urns[e.i][e.u].ink | BiteEvent       |
 | Cat.bite       | Bite      | Vat.urns[e.i][e.u].art | BiteEvent       |
 
@@ -40,6 +40,21 @@ type FrobEvent {
   dart:  Float       # e.dart - art delta
   tx:    Tx          # transaction meta
 }
+```
+
+
+## ForkEvent
+
+A `ForkEvent` is created when `fork` is executed.
+
+```graphql
+type ForkEvent {
+  ilk:   Ilk         # ilk object at event block height
+  src:   Urn         # urn from where collateral/stablecoin is withdrawn
+  dst:   Urn         # urn in which collateral/stablecoin is deposited
+  dink:  Float       # e.dink - ink delta
+  dart:  Float       # e.dart - art delta
+  tx:    Tx          # transaction meta
 ```
 
 ## BiteEvent
@@ -106,6 +121,17 @@ type Query {
      condition: BiteCondition,
      filter:    BiteFilter
    ): [BiteEvent]
+
+   allVatForks(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   ForkOrderBy,
+     condition: ForkCondition,
+     filter:    ForkFilter
+   ): [ForkEvent]
 
 }
 ```
