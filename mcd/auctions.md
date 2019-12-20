@@ -76,10 +76,12 @@ Bids are created on `kick` and updated with every subsequent bid event.
 | Flipper.deal   | DSNote    | Flipper.bids[e.id]  | BidEvent        |
 | Flipper.yank   | DSNote    | Flipper.bids[e.id]  | BidEvent        |
 | Flopper.kick   | Kick      | Flopper.bids[e.id]  | BidEvent        |
+| Flopper.tick   | DSNote    | Flopper.bids[e.id]  | BidEvent        |
 | Flopper.tend   | DSNote    | Flopper.bids[e.id]  | BidEvent        |
 | Flopper.deal   | DSNote    | Flopper.bids[e.id]  | BidEvent        |
 | Flopper.yank   | DSNote    | Flopper.bids[e.id]  | BidEvent        |
 | Flapper.kick   | Kick      | Flapper.bids[e.id]  | BidEvent        |
+| Flapper.tick   | DSNote    | Flapper.bids[e.id]  | BidEvent        |
 | Flapper.tend   | DSNote    | Flapper.bids[e.id]  | BidEvent        |
 | Flapper.deal   | DSNote    | Flapper.bids[e.id]  | BidEvent        |
 | Flapper.yank   | DSNote    | Flapper.bids[e.id]  | BidEvent        |
@@ -87,12 +89,24 @@ Bids are created on `kick` and updated with every subsequent bid event.
 
 ## Bid Query
 
-Retrieve Bids with postgraphile-style collection filtering:
+Retrieve Bids with postgraphile-style collection filtering.  _Active_ auctions are defined as those in which a `deal` 
+transaction has not occurred. 
 
 ```graphql
 type Query {
 
    allFlips(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BidOrderBy,
+     condition: BidCondition,
+     filter:    BidFilter
+   ): [Flip]
+
+   activeFlips(
      first:     Int,
      last:      Int,
      offset:    Int,
@@ -120,12 +134,34 @@ type Query {
      filter:    BidFilter
    ): [Flap]
 
+   activeFlaps(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BidOrderBy,
+     condition: BidCondition,
+     filter:    BidFilter
+   ): [Flap]
+
    getFlap(
      id:          Int!
      blockNumber: Int
    ): Flap
 
    allFlops(
+     first:     Int,
+     last:      Int,
+     offset:    Int,
+     before:    Cursor,
+     after:     Cursor,
+     orderBy:   BidOrderBy,
+     condition: BidCondition,
+     filter:    BidFilter
+   ): [Flop]
+
+   activeFlops(
      first:     Int,
      last:      Int,
      offset:    Int,
